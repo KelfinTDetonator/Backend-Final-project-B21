@@ -1,6 +1,7 @@
 const express = require('express'),
-    router = express.Router()
+    router = express.Router(),
+    adminRouter = require('./admin.router')
 
-router.use('/')
+router.use('/admin', adminRouter)
 
 module.exports = router
