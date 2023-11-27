@@ -29,7 +29,7 @@ module.exports = {
             const id = parseInt(req.params.id);
             if(!id){ return res.status(400).json( { error: true, message: "Bad Request Error" } ) };
 
-            const categoryData = await category.findUnique({ where: id });
+            const categoryData = await category.findUnique({ where: { id } });
             if(!categoryData) { return res.status(404).json( { error: true, message: "Category Not Found" } ) }
 
             return res.status(200).json({ 
@@ -64,11 +64,13 @@ module.exports = {
 
         if(!(id && name)){ return res.status(400).json( { error: true, message: "Bad Request Error" } ) };
 
-        const categoryData = await category.findUnique({ where: id });
+        const categoryData = await category.findUnique({ where: { id } });
         if(!categoryData) { return res.status(404).json( { error: true, message: "Category Not Found" } ) }
 
         await category.update({
-            where: id,
+            where: {
+                id
+            },
             data: {
                 name
             }
@@ -85,7 +87,7 @@ module.exports = {
         const id = parseInt(req.params.id);
         if(!id){ return res.status(400).json( { error: true, message: "Bad Request Error" } ) };
 
-        const categoryData = await category.findUnique({ where: id });
+        const categoryData = await category.findUnique({ where: { id } });
         if(!categoryData) { return res.status(404).json( { error: true, message: "Category Not Found" } ) }
 
         await category.delete( { where: { id } } );
