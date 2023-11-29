@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int      @id @default(autoincrement())
+  email                String
+  password             String
+  reset_password_token String?
+  role                 Role    @default(user)
+  order                Order[]
+  profile              Profile?
+  otp                  String?
+  verified             Boolean? @default(false)
+  expiration_time      DateTime?
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Profile {
+  id              Int      @id @default(autoincrement())
+  name            String
+  phone           String
+  city            String?
+  nationality     String?
+  profile_picture String?
+  userId          Int      @unique @map("user_id")
+  user            User     @relation(fields: [userId], references: [id])
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       String
+  modul       Int
+  duration    String
+  rating      Float
+  description String
+  image_url   String
+  progress    Boolean  @default(false)
+  author      String
+  group_url   String
+  level       Level
+  type        Type     @default(FREE)
+  categoryId  Int      @unique @map("category_id")
+  category    Category @relation(fields: [categoryId], references: [id])
+  order       Order[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("courses")
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique @map("user_id")
+  user        User     @relation(fields: [userId], references: [id])
+  courseId    Int      @unique @map("course_id")
+  course      Course   @relation(fields: [courseId], references: [id])
+  total_price String
+  // type_of_payment String
+  status      Status   @default(UNPAID)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  course    Course[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("categories")
+}
+
+model Chapter {
+  id        Int        @id @default(autoincrement())
+  courseId  String     @map("course_id")
+  name      String
+  material  Material[]
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  @@map("chapters")
+}
+
+model Material {
+  id          Int      @id @default(autoincrement())
+  chapterId   Int      @unique @map("chapter_id")
+  video_url   String
+  name        String
+  description String
+  title       String
+  chapter     Chapter  @relation(fields: [chapterId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("materials")
+}
+
+enum Type {
+  FREE
+  PREMIUM
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Status {
+  PAID
+  UNPAID
+}
+
+enum Role {
+  admin
+  user
+}
