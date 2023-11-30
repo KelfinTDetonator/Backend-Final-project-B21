@@ -5,12 +5,18 @@ const { user, users, profile } = require("../models"),
     // nodemailer = require('nodemailer')
     Joi= require('joi')
     jwt= require('jsonwebtoken')
+    crypto = require('crypto')
     
 const nodemailer = require("../utils/nodemailer");
 
 function AddMinutesToDate(date, minutes) {
     return new Date(date.getTime() + minutes * 60000);
 }
+
+const generateResetToken = () => {
+  const token = crypto.randomBytes(20).toString('hex');
+  return token;
+};
       
 module.exports = {
     register: async (req, res, next) => {
@@ -321,5 +327,47 @@ module.exports = {
           message: error.message
         });
       }
+    },
+    forgetPassword: async (req, res, next) => {
+      try {
+        const { email } = req.body;
+    
+        const user = await prisma.user.findFirst({
+          where: { email },
+        });
+    
+        if (!user) {
+          return res.status(404).json({
+            status: 'failed',
+            message: 'Email tidak terdaftar',
+          });
+        }
+    
+        const resetToken = generateResetToken();
+    
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            reset_password_token: resetToken,
+          },
+        });
+    
+        const resetLink = `${resetToken}`;
+    
+        nodemailer.sendEmail(email, "Email Activation", `silahkan klik link berikut ini untuk mengganti password ${resetLink}`)
+        
+        res.status(200).json({
+          status: 'success',
+          message: 'link reset password telah dikirim melalui email',
+        });
+      } catch (error) {
+        res.status(500).json({
+          status: 'failed',
+          message: error.message,
+        });
+      }
     }
+    
 }

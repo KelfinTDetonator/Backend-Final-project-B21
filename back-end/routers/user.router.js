@@ -10,5 +10,6 @@ router.post('/otp', controller.otp)
 router.post('/verify', controller.verify)
 router.post('/', controller.register)
 router.post('/login', controller.login)
+router.post('/forget-password', controller.forgetPassword)
 
 module.exports = router
