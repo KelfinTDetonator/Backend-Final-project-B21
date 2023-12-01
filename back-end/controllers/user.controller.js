@@ -7,7 +7,7 @@ const { user, users, profile } = require("../models"),
     jwt= require('jsonwebtoken')
     crypto = require('crypto')
     
-const nodemailer = require("../utils/nodemailer");
+const nodemailer = require("../utils/index.js");
 
 function AddMinutesToDate(date, minutes) {
     return new Date(date.getTime() + minutes * 60000);
@@ -261,35 +261,33 @@ module.exports = {
       try {
         const { id } = req.params;
   
-        await prisma.$transaction(async (PrismaClient) => {
-          const existingUser = await prisma.user.findUnique({
-            where: {
-              id: parseInt(id)
-            }
-          });
-          if (!existingUser) {
-            return res.status(404).json({
-              status: 'failed',
-              message: `Pengguna dengan ID ${id} tidak ditemukan`
-            });
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            id: parseInt(id)
           }
-    
-          await PrismaClient.profile.delete({
-            where: {
-              id: parseInt(id)
-            }
+        });
+        if (!existingUser) {
+          return res.status(404).json({
+            status: 'failed',
+            message: `Pengguna dengan ID ${id} tidak ditemukan`
           });
-
-          await PrismaClient.user.delete({
-            where: {
-              id: parseInt(id)
-            }
-          });
-        })
+        }
+        await prisma.profile.delete({
+          where: {
+            id: parseInt(id)
+          }
+        });
+        await prisma.user.delete({
+          where: {
+            id: parseInt(id)
+          }
+        });
+        
         res.status(200).json({
           status: 'success',
           message: `Pengguna dengan ID ${id} berhasil dihapus`
         });
+
       } catch (error) {
         res.status(500).json({
           status: 'failed',
@@ -354,13 +352,53 @@ module.exports = {
           },
         });
     
-        const resetLink = `${resetToken}`;
+        const resetLink = `localhost:3000/api/v1/auth/new-password${resetToken}`;
     
         nodemailer.sendEmail(email, "Email Activation", `silahkan klik link berikut ini untuk mengganti password ${resetLink}`)
         
         res.status(200).json({
           status: 'success',
           message: 'link reset password telah dikirim melalui email',
+        });
+      } catch (error) {
+        res.status(500).json({
+          status: 'failed',
+          message: error.message,
+        });
+      }
+    },
+    insertPassword: async (req, res, next) => {
+      try {
+        const { token, newPassword } = req.body;
+    
+        const user = await prisma.user.findFirst({
+          where: {
+            reset_password_token: token,
+          },
+        });
+    
+        if (!user) {
+          return res.status(404).json({
+            status: 'failed',
+            message: 'Token reset password tidak valid atau telah kadaluarsa',
+          });
+        }
+    
+        const encryptedPassword = await bcrypt.hash(newPassword, 10);
+    
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            password: encryptedPassword,
+            reset_password_token: null,  
+          },
+        });
+    
+        res.status(200).json({
+          status: 'success',
+          message: 'Password berhasil direset',
         });
       } catch (error) {
         res.status(500).json({

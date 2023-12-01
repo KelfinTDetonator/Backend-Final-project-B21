@@ -29,8 +29,8 @@ model User {
 
 model Profile {
   id              Int      @id @default(autoincrement())
-  name            String
-  phone           String
+  name            String?
+  phone           String?
   city            String?
   nationality     String?
   profile_picture String?

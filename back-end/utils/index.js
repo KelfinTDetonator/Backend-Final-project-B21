@@ -1,3 +1,4 @@
+const ImageKit = require('imagekit')
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const { GOOGLE_REFRESH_TOKEN, MAILER_EMAIL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
@@ -23,5 +24,10 @@ module.exports= {
     });
   
     transport.sendMail({ to, subject, text});
-  }
+  },
+  imageKit: new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+    privateKey: process.env.IMAGEKIT_SECRET_KEY,
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
+  })
 }
