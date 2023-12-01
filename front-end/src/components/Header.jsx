@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
-const NavbarBasicPreview = () => {
+const Header = () => {
   const [isToggleOpen, setIsToggleOpen] = useState(false);
   const [state, setState] = useState({
     "id-l16": "",
@@ -25,12 +26,12 @@ const NavbarBasicPreview = () => {
             role="navigation"
           >
             {/*      <!-- Brand logo --> */}
-            <a
+            <Link
               id="WindUI"
               aria-label="WindUI logo"
               aria-current="page"
               className="flex items-center gap-2 whitespace-nowrap py-3 text-lg focus:outline-none lg:flex-1"
-              href="javascript:void(0)"
+              to="/"
             >
               <img
                 src="/logo (1).png"
@@ -38,7 +39,7 @@ const NavbarBasicPreview = () => {
                 height="70"
                 alt="DemyU Course"
               />
-            </a>
+            </Link>
             {/*      <!-- Mobile trigger --> */}
             <button
               className={`relative order-10 block h-10 w-10 self-center lg:hidden
@@ -110,15 +111,15 @@ const NavbarBasicPreview = () => {
               </div>
               {/*    <!-- End Rounded large search input  --> */}
               <li role="none" className="flex items-stretch">
-                <a
+                <Link
                   role="menuitem"
                   aria-haspopup="false"
                   className="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-lime-500 focus:text-black focus:outline-none focus-visible:outline-none lg:px-8"
-                  href="/"
+                  to="/auth/login"
                 >
                   <span>Masuk</span>
                   <ArrowLeftOnRectangleIcon className="h-6 w-6" />
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
@@ -129,4 +130,4 @@ const NavbarBasicPreview = () => {
   );
 };
 
-export default NavbarBasicPreview;
+export default Header;

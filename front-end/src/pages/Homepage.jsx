@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import Glide from "@glidejs/glide";
 import CourseCard from "../components/CourseCard";
+import { Link } from "react-router-dom";
+import Header from "../components/Header";
 
 const Homepage = () => {
   useEffect(() => {
@@ -33,6 +35,7 @@ const Homepage = () => {
 
   return (
     <>
+      <Header />
       {/*<!-- Component: Two columns even layout --> */}
       <section>
         <div className=" m-auto ">
@@ -48,9 +51,11 @@ const Homepage = () => {
             <div className="h-96 text-xl col-span-4 lg:col-span-5 bg-gradient-to-b from-white from-5% via-lime-100 via-50% to-green-300 to-95% flex justify-center items-center flex-col ">
               <h1 className="pb-4">Belajar dari Praktisi Terbaik</h1>
               {/*<!-- Component: Large primary basic button --> */}
-              <button className="inline-flex items-center justify-center h-12 gap-2 px-6 text-sm font-medium tracking-wide text-white transition duration-300 rounded-[20px] whitespace-nowrap bg-emerald-500 hover:bg-emerald-600 focus:bg-emerald-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:border-emerald-300 disabled:bg-emerald-300 disabled:shadow-none">
-                <span>Ikuti Kelas</span>
-              </button>
+              <Link to="/auth/login">
+                <button className="inline-flex items-center justify-center h-12 gap-2 px-6 text-sm font-medium tracking-wide text-white transition duration-300 rounded-[20px] whitespace-nowrap bg-emerald-500 hover:bg-emerald-600 focus:bg-emerald-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:border-emerald-300 disabled:bg-emerald-300 disabled:shadow-none">
+                  <span>Ikuti Kelas</span>
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -61,24 +66,48 @@ const Homepage = () => {
       <div className="bg-gradient-to-b from-green-300 from-50% via-lime-100 via-70% to-white to-95% glide-03 relative w-full">
         <div className="py-5 px-2 flex">
           <h2>Kategori Belajar</h2>
-          <a href="" className="ms-auto text-sky-600">
+          <Link to="/" className="ms-auto text-sky-600">
             Lihat semua
-          </a>
+          </Link>
         </div>
         {/*    <!-- Slides --> */}
         <div className="overflow-hidden" data-glide-el="track">
           <ul className="whitespace-no-wrap  flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] [touch-action: pan-Y] [will-change: transform] relative flex w-full overflow-hidden p-0">
             <li>
-              <a href="#">
-                <div className="h-2/3 lg:max-h-80 overflow-hidden rounded-[13px]">
+              <Link to="/">
+                <div className="h-2/3 lg:max-h-80 overflow-hidden rounded-[13px] shadow-md shadow-slate-400">
                   <img
                     src="/android dev.jpg"
                     alt="Android Dev"
                     className="h-full w-full object-none object-center"
                   />
                 </div>
-                <p className="text-center">Android Dev</p>
-              </a>
+                <p className="text-center pt-2">Android Dev</p>
+              </Link>
+            </li>
+            <li>
+              <Link to="/">
+                <div className="h-2/3 lg:max-h-80 overflow-hidden rounded-[13px] shadow-md shadow-slate-400">
+                  <img
+                    src="/uiux.jpg"
+                    alt="UI/UX Design"
+                    className="h-full w-full object-none object-center"
+                  />
+                </div>
+                <p className="text-center pt-2">UI/UX Design</p>
+              </Link>
+            </li>
+            <li>
+              <Link to="/">
+                <div className="h-2/3 lg:max-h-80 overflow-hidden rounded-[13px] shadow-md shadow-slate-400">
+                  <img
+                    src="/data science.jpg"
+                    alt="Data Science"
+                    className="h-full w-full object-none object-center"
+                  />
+                </div>
+                <p className="text-center pt-2">Data Science</p>
+              </Link>
             </li>
           </ul>
         </div>
@@ -134,9 +163,9 @@ const Homepage = () => {
       {/*<!-- End Carousel with indicators & controls inside --> */}
       <div className=" px-2 flex">
         <h2 className="pb-4"> Kursus Populer</h2>
-        <a href="" className="ms-auto text-sky-600">
+        <Link to="" className="ms-auto text-sky-600">
           Lihat semua
-        </a>
+        </Link>
       </div>
 
       <div className="px-5 flex space-x-3">
