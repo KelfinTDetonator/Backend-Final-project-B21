@@ -1,20 +1,20 @@
-require('dotenv').config();
-const express = require('express'),
-    app = express(),
-    port = process.env.PORT || 1234,
-    cors = require('cors'),
-    router = require('./routers')
+require("dotenv").config();
+const express = require("express");
 
-app.use(express.json({strict: false}))
-app.use(cors())
+const app = express();
+const port = process.env.PORT || 1234;
+const cors = require("cors");
+const router = require("./routers");
 
-app.use('/api/v1', router)
-app.get('*', (req, res) => {
-    return res.status(404).json({
-        error: 'endpoint is not registereds'
-    })
-})
+app.use(express.json({ strict: false }));
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+
+app.use("/api/v1", router);
+app.get("*", (req, res) => res.status(404).json({
+  error: "endpoint is not registereds",
+}));
 
 app.listen(port, () => {
-    console.log(`server is running in port ${port}`)
-})
+  console.log(`server is running in port ${port}`);
+});
