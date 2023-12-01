@@ -1,7 +1,10 @@
-const express = require('express'),
-    router = express.Router(),
-    categoryRouter = require('./category.router')
+const express = require("express");
 
-router.use(categoryRouter)
+const router = express.Router();
+const categoryRouter = require("./category.router");
+const materialRouter = require("./material.router");
 
-module.exports = router
+router.use(categoryRouter);
+router.use(materialRouter);
+
+module.exports = router;
