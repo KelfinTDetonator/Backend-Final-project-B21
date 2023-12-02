@@ -11,20 +11,20 @@ datasource db {
 }
 
 model User {
-  id                   Int      @id @default(autoincrement())
+  id                   Int             @id @default(autoincrement())
   email                String
   password             String
   reset_password_token String
-  role                 Role   @default(USER)
+  role                 Role            @default(USER)
   order                Order[]
   profile              Profile?
-  isActive             Boolean 
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+  isActive             Boolean
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
+  CourseProgress       CourseProgress?
 
   @@map("users")
 }
-
 
 model Profile {
   id              Int      @id @default(autoincrement())
@@ -42,39 +42,54 @@ model Profile {
 }
 
 model Course {
-  id          Int      @id @default(autoincrement())
-  name        String
-  price       String
-  modul       Int
-  duration    String
-  rating      Float
-  description String
-  image_url   String
-  progress    Boolean  @default(false)
-  author      String
-  group_url   String
-  level       Level
-  type        Type     @default(FREE)
-  categoryId  Int      @unique @map("category_id")
-  category    Category @relation(fields: [categoryId], references: [id])
-  order       Order[]
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             Int             @id @default(autoincrement())
+  name           String
+  price          String
+  modul          Int
+  duration       String
+  rating         Float?
+  description    String
+  imageUrl       String?         @map("image_url")
+  // progress       Boolean         @default(false)
+  author         String
+  groupUrl       String          @map("group_url")
+  isActive       Boolean         @default(false) @map("is_active")
+  level          Level?
+  type           Type            @default(FREE)
+  categoryId     Int             @unique @map("category_id")
+  category       Category        @relation(fields: [categoryId], references: [id])
+  order          Order[]
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  CourseProgress CourseProgress?
 
   @@map("courses")
 }
 
+model CourseProgress {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique @map("user_id")
+  user       User     @relation(fields: [userId], references: [id])
+  courseId   Int      @unique @map("course_id")
+  course     Course   @relation(fields: [courseId], references: [id])
+  materialId Int      @unique @map("material_id")
+  material   Material @relation(fields: [materialId], references: [id])
+  isComplete Boolean  @map("is_complete")
+
+  @@map("course_progress")
+}
+
 model Order {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @unique @map("user_id")
-  user        User     @relation(fields: [userId], references: [id])
-  courseId    Int      @unique @map("course_id")
-  course      Course   @relation(fields: [courseId], references: [id])
-  total_price String
+  id             Int      @id @default(autoincrement())
+  userId         Int      @unique @map("user_id")
+  user           User     @relation(fields: [userId], references: [id])
+  courseId       Int      @unique @map("course_id")
+  course         Course   @relation(fields: [courseId], references: [id])
+  total_price    String
   payment_method String
-  status      Status   @default(UNPAID)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  status         Status   @default(UNPAID)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   @@map("orders")
 }
@@ -101,15 +116,16 @@ model Chapter {
 }
 
 model Material {
-  id          Int      @id @default(autoincrement())
-  chapterId   Int      @unique @map("chapter_id")
-  video_url   String
-  name        String
-  description String
-  title       String
-  chapter     Chapter  @relation(fields: [chapterId], references: [id])
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             Int             @id @default(autoincrement())
+  chapterId      Int             @unique @map("chapter_id")
+  video_url      String
+  name           String
+  description    String
+  title          String
+  chapter        Chapter         @relation(fields: [chapterId], references: [id])
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  CourseProgress CourseProgress?
 
   @@map("materials")
 }

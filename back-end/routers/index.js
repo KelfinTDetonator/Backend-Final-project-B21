@@ -1,9 +1,9 @@
 const express = require('express'),
     router = express.Router(),
-    adminRouter = require('./admin.router'),
-    categoryRouter = require('./category.router');
+    categoryRouter = require('./category.router'),
+    courseRouter = require('./course.router')
 
-router.use('/admin', adminRouter);
 router.use(categoryRouter);
+router.use('/course', courseRouter)
 
 module.exports = router
