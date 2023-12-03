@@ -1,4 +1,4 @@
-function checkFile(fileBuffer, res) {
+async function checkFile(fileBuffer, res) {
   const uInt8Arr = new Uint8Array(fileBuffer).subarray(0, 8); // bytes offset
   let fileType = "";
   uInt8Arr.forEach((val) => {
