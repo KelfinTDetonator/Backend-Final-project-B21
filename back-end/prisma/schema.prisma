@@ -91,9 +91,9 @@ model Category {
 
 model Chapter {
   id        Int        @id @default(autoincrement())
-  courseId  Int        @unique @map("course_id")
+  courseId  Int        @map("course_id")
   name      String
-  duration  Int
+  duration  Int?
   course    Course     @relation(fields: [courseId], references: [id])
   material  Material[]
   createdAt DateTime   @default(now()) @map("created_at")
@@ -104,7 +104,7 @@ model Chapter {
 
 model Material {
   id          Int      @id @default(autoincrement())
-  chapterId   Int      @unique @map("chapter_id")
+  chapterId   Int      @map("chapter_id")
   video_url   String
   name        String
   description String
