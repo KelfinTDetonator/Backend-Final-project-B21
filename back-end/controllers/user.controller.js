@@ -9,8 +9,12 @@ const { user, users, profile } = require("../models"),
     
 const nodemailer = require("../utils/index.js");
 
-function AddMinutesToDate(date, minutes) {
-    return new Date(date.getTime() + minutes * 60000);
+// function AddMinutesToDate(date, minutes, seconds) {
+//     return new Date(date.getTime() + minutes * 60000);
+//     return new Date(date.getTime() + seconds * 1000);
+// }
+function AddSecondsToDate(date, seconds) {
+  return new Date(date.getTime() + seconds * 1000);
 }
 
 const generateResetToken = () => {
@@ -69,7 +73,8 @@ module.exports = {
           },
           data: {
             otp,
-            expiration_time: AddMinutesToDate(new Date(), 10)
+            // expiration_time: AddMinutesToDate(new Date(), 10)
+            expiration_time: AddSecondsToDate(new Date(), 30)
           }
         });
         
@@ -352,7 +357,7 @@ module.exports = {
           },
         });
     
-        const resetLink = `localhost:3000/api/v1/auth/new-password${resetToken}`;
+        const resetLink = `localhost:3000/reset-password?token=${resetToken}`;
     
         nodemailer.sendEmail(email, "Email Activation", `silahkan klik link berikut ini untuk mengganti password ${resetLink}`)
         
@@ -369,7 +374,8 @@ module.exports = {
     },
     insertPassword: async (req, res, next) => {
       try {
-        const { token, newPassword } = req.body;
+        const { newPassword, confirm_password } = req.body;
+        const { token } = req.query;
     
         const user = await prisma.user.findFirst({
           where: {
@@ -392,7 +398,7 @@ module.exports = {
           },
           data: {
             password: encryptedPassword,
-            reset_password_token: null,  
+            reset_password_token: token 
           },
         });
     
