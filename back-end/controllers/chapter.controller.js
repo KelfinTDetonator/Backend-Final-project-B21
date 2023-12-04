@@ -73,4 +73,50 @@ module.exports = {
 
     return res.status(200).json({ error: false, message: "Chapter data is up to date!" });
   },
+  getChapterById: async (req, res) => {
+    try {
+      const chapterId = Number(req.params.id);
+
+      const chapterData = await chapter.findUnique({ where: { id: chapterId } });
+      if (!chapterData) { return res.status(404).json({ error: true, message: "Chapter not found" }); }
+
+      return res.status(200).json({
+        error: false,
+        message: "200 OK",
+        chapter: chapterData,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+  },
+  getAllChapter: async (req, res) => {
+    try {
+      const allChapter = await chapter.findMany();
+      if (!allChapter) { return res.status(404).json({ error: true, message: "Chapter is not created yet!" }); }
+
+      return res.status(200).json({
+        error: false,
+        message: "",
+        chapters: allChapter,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+  },
+  deleteChapterById: async (req, res) => {
+    try {
+      const chapterId = Number(req.params.id);
+
+      const chapterData = await chapter.findUnique({ where: { id: chapterId } });
+      if (!chapterData) { return res.status(404).json({ error: true, message: "Chapter not found" }); }
+
+      await chapter.delete({ where: { id: chapterId } });
+      return res.status(200).json({ error: false, message: "Chapter deleted successfully" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+  },
 };
