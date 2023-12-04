@@ -56,7 +56,7 @@ model Course {
   isActive       Boolean         @default(false) @map("is_active")
   level          Level?
   type           Type            @default(FREE)
-  categoryId     Int             @unique @map("category_id")
+  categoryId     Int             @map("category_id")
   category       Category        @relation(fields: [categoryId], references: [id])
   order          Order[]
   createdAt      DateTime        @default(now()) @map("created_at")
