@@ -5,5 +5,6 @@ const express = require('express'),
 
 router.use('/profile', newProfile)
 router.use('/auth', register);
+router.use(categoryRouter);
 
 module.exports = router
