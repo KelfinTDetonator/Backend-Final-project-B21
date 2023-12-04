@@ -3,7 +3,12 @@ const express = require('express'),
     categoryRouter = require('./category.router'),
     courseRouter = require('./course.router')
 
-router.use(categoryRouter);
-router.use('/course', courseRouter)
+const materialRouter = require("./material.router");
+const chapterRouter = require("./chapter.router");
 
-module.exports = router
+router.use('/course', courseRouter);
+router.use('/category', categoryRouter);
+router.use('/chapter', chapterRouter);
+router.use('/material', materialRouter);
+
+module.exports = router;

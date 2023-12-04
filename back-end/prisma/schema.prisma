@@ -62,6 +62,7 @@ model Course {
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
   CourseProgress CourseProgress?
+  Chapter        Chapter[]
 
   @@map("courses")
 }
@@ -106,8 +107,10 @@ model Category {
 
 model Chapter {
   id        Int        @id @default(autoincrement())
-  courseId  String     @map("course_id")
+  courseId  Int        @map("course_id")
   name      String
+  duration  Int?
+  course    Course     @relation(fields: [courseId], references: [id])
   material  Material[]
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
