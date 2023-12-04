@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+const Homepage = () => {
+  return <div>Homepage</div>;
+=======
 import { useEffect } from "react";
 import Glide from "@glidejs/glide";
 import CourseCard from "../components/CourseCard";
@@ -163,6 +167,7 @@ const Homepage = () => {
       </div>
     </>
   );
+>>>>>>> backend
 };
 
 export default Homepage;

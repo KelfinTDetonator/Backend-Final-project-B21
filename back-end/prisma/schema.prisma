@@ -14,25 +14,27 @@ model User {
   id                   Int             @id @default(autoincrement())
   email                String
   password             String
-  reset_password_token String
-  role                 Role            @default(USER)
+  reset_password_token String?
+  role                 Role    @default(user)
   order                Order[]
   profile              Profile?
-  isActive             Boolean
-  createdAt            DateTime        @default(now()) @map("created_at")
-  updatedAt            DateTime        @updatedAt @map("updated_at")
+  otp                  String?
+  verified             Boolean? @default(false)
+  expiration_time      DateTime?
   CourseProgress       CourseProgress?
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 model Profile {
   id              Int      @id @default(autoincrement())
-  name            String
-  phone           String
-  city            String
-  nationality     String
-  profile_picture String
+  name            String?
+  phone           String?
+  city            String?
+  nationality     String?
+  profile_picture String?
   userId          Int      @unique @map("user_id")
   user            User     @relation(fields: [userId], references: [id])
   createdAt       DateTime @default(now()) @map("created_at")
@@ -150,6 +152,6 @@ enum Status {
 }
 
 enum Role {
-  ADMIN
-  USER
+  admin
+  user
 }

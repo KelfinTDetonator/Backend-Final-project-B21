@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+const Header = () => {
+  return <div>Header</div>;
+};
+
+export default Header;
+=======
 import { useState } from "react";
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline";
 
@@ -130,3 +137,4 @@ const NavbarBasicPreview = () => {
 };
 
 export default NavbarBasicPreview;
+>>>>>>> backend

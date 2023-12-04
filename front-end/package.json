@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
+=======
     "@glidejs/glide": "^3.6.0",
     "@heroicons/react": "^2.0.18",
+>>>>>>> backend
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^1.9.7",
     "axios": "^1.6.2",
@@ -27,13 +30,19 @@
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react-swc": "^3.3.2",
+<<<<<<< HEAD
+=======
     "autoprefixer": "^10.4.16",
+>>>>>>> backend
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+<<<<<<< HEAD
+=======
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
+>>>>>>> backend
     "vite": "^4.4.5"
   }
 }
