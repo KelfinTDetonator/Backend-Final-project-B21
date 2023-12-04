@@ -5,7 +5,7 @@ module.exports = (allowedRoles) => {
         if (!req.user || !req.user.role) {
           return res.status(403).json({
             status: 'failed',
-            message: 'User role not defined',
+            message: 'role tidak ditemukan',
           });
         }
   
