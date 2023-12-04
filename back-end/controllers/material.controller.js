@@ -142,7 +142,7 @@ module.exports = {
 
       await material.delete({ where: { id: materialId } });
 
-      return res.status(204).json({ error: false, message: "Resource deleted successfully" });
+      return res.status(200).json({ error: false, message: "Resource deleted successfully" });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: true, message: "Internal Server Error" });

@@ -33,6 +33,8 @@ module.exports = {
   },
   patchChapterById: async (req, res) => {
     const chapterId = Number(req.params.id);
+    if (!chapterId) { return res.status(400).json({ error: true, message: "Bad request" }); }
+
     const courseId = Number(req.body.courseId);
     const { name } = req.body;
 
@@ -76,6 +78,7 @@ module.exports = {
   getChapterById: async (req, res) => {
     try {
       const chapterId = Number(req.params.id);
+      if (!chapterId) { return res.status(400).json({ error: true, message: "Bad request" }); }
 
       const chapterData = await chapter.findUnique({ where: { id: chapterId } });
       if (!chapterData) { return res.status(404).json({ error: true, message: "Chapter not found" }); }
@@ -108,6 +111,7 @@ module.exports = {
   deleteChapterById: async (req, res) => {
     try {
       const chapterId = Number(req.params.id);
+      if (!chapterId) { return res.status(400).json({ error: true, message: "Bad request" }); }
 
       const chapterData = await chapter.findUnique({ where: { id: chapterId } });
       if (!chapterData) { return res.status(404).json({ error: true, message: "Chapter not found" }); }
