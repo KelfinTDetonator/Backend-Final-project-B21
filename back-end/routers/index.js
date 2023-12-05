@@ -1,17 +1,18 @@
-const express = require('express'),
-      router = express.Router(),
-      materialRouter = require("./material.router"),
-      categoryRouter = require('./category.router'),
-      courseRouter = require('./course.router'),
-      chapterRouter = require("./chapter.router"),
-      register = require('./user.router'),
-      newProfile = require('./profile.router');
+const express = require("express");
 
-router.use('/course', courseRouter);
-router.use('/category', categoryRouter);
-router.use('/chapter', chapterRouter);
-router.use('/material', materialRouter);
-router.use('/profile', newProfile)
-router.use('/auth', register);
+const router = express.Router();
+const materialRouter = require("./material.router");
+const categoryRouter = require("./category.router");
+const courseRouter = require("./course.router");
+const chapterRouter = require("./chapter.router");
+const register = require("./user.router");
+const newProfile = require("./profile.router");
 
-module.exports = router
+router.use("/course", courseRouter);
+router.use("/category", categoryRouter);
+router.use("/chapter", chapterRouter);
+router.use("/material", materialRouter);
+router.use("/profile", newProfile);
+router.use("/auth", register);
+
+module.exports = router;

@@ -1,5 +1,5 @@
 const fsPromises = require("fs").promises;
-const imageKit = require("../utils/imageKit");
+const utils = require("../utils");
 const { material } = require("../models/index");
 const { checkFile } = require("../utils/checkVideoType");
 
@@ -17,7 +17,7 @@ module.exports = {
 
       checkFile(fileBuffer, res);
 
-      const uploadResponse = await imageKit.upload({
+      const uploadResponse = await utils.imageKit.upload({
         file: fileBuffer,
         fileName: req.file.originalname,
       });
@@ -103,7 +103,7 @@ module.exports = {
       const fileBuffer = await fsPromises.readFile(req.file.path) || null;
       if (fileBuffer !== null) {
         checkFile(fileBuffer, res);
-        const uploadResponse = await imageKit.upload({
+        const uploadResponse = await utils.imageKit.upload({
           file: fileBuffer,
           fileName: req.file.originalname,
         });
