@@ -172,7 +172,7 @@ module.exports = {
   verify: async (req, res) => {
     try {
       const { otp } = req.body;
-      const existingUser = await user.findFirst();
+      const existingUser = await user.findFirst({ where: { otp } });
       const userId = existingUser.id;
 
       if (existingUser) {
