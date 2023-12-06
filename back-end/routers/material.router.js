@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const materialController = require("../controllers/material.controller");
-const storage = require("../middlewares/multer");
+const storage = require("../middleware/multer");
 
 router.post("/", storage.upload.single("video"), materialController.uploadMaterial);
 router.get("/", materialController.getAllMaterial); // get all
