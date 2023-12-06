@@ -20,6 +20,7 @@ module.exports = {
       const uploadResponse = await utils.imageKit.upload({
         file: fileBuffer,
         fileName: req.file.originalname,
+        folder: "Materials_Videos",
       });
 
       const uploadToDB = await material.create({

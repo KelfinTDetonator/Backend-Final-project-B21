@@ -6,7 +6,7 @@ module.exports = {
     try {
       const fileToString = req.file.buffer.toString("base64");
 
-      const uploadFile = await utils.imagekit.upload({
+      const uploadFile = await utils.imageKit.upload({
         fileName: req.file.originalname,
         file: fileToString,
         folder: "CourseImage",
@@ -26,14 +26,14 @@ module.exports = {
           price: req.body.price,
           modul: parseInt(req.body.modul),
           duration: req.body.duration,
-          rating: req.body.rating,
+          rating: parseFloat(req.body.rating),
           description: req.body.description,
           imageUrl: uploadFile.url,
           author: req.body.author,
           groupUrl: req.body.group_url,
           level: req.body.level,
           type: req.body.type,
-          isActive: req.body.is_active || false,
+          isActive: Boolean(req.body.is_active) || false,
           categoryId: parseInt(req.body.category_id),
         },
       });
@@ -42,6 +42,7 @@ module.exports = {
         data,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         error,
       });
@@ -102,7 +103,7 @@ module.exports = {
     try {
       const fileToString = req.file.buffer.toString("base64");
 
-      const uploadFile = await utils.imagekit.upload({
+      const uploadFile = await utils.imageKit.upload({
         fileName: req.file.originalname,
         file: fileToString,
         folder: "CourseImage",
