@@ -6,8 +6,10 @@ const port = process.env.PORT || 1234;
 const cors = require("cors");
 const path = require("path");
 const router = require("./routers/index");
+const morgan = require("morgan");
 
 app.use(express.json({ strict: false }));
+app.use(morgan("dev"));
 app.use(cors());
 app.use("/api/v1", router);
 app.use(express.static(path.join(__dirname, "views")));
