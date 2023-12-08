@@ -122,7 +122,7 @@ model Chapter {
 
 model Material {
   id             Int             @id @default(autoincrement())
-  chapterId      Int             @unique @map("chapter_id")
+  chapterId      Int             @map("chapter_id")
   video_url      String
   name           String
   description    String
