@@ -91,37 +91,55 @@ module.exports = {
 
       if (!isExist) { return res.status(404).json({ error: true, message: "Not Found" }); }
 
-      await material.update({
-        where: { id: materialId },
-        data: {
-          chapterId,
-          name,
-          description,
-          title,
-        },
-      });
-
-      const fileBuffer = await fsPromises.readFile(req.file.path) || null;
+      const fileBuffer = (req.file) ? await fsPromises.readFile(req.file.path) : null;
       if (fileBuffer !== null) {
         checkFile(fileBuffer, res);
         const uploadResponse = await utils.imageKit.upload({
           file: fileBuffer,
           fileName: req.file.originalname,
+          folder: "Materials_Videos",
         });
 
+        const allMaterialsByChapterId = await material.findMany({
+          where: { chapterId: isExist.chapterId },
+        });
+        const duration = await utils.getVideoDuration(allMaterialsByChapterId);
+        console.log(duration);
         await material.update({
           where: { id: materialId },
           data: {
-            chapterId,
+            // chapterId: chapterId || isExist.chapterId,
+            // chapter ID gaboleh diubah ke id lain, karena table chapter perlu sinkron dengan table materi yang baru di-update
+            // supaya durasi video yang terbaru sinkron di table chapter dan mencegah inkonsistensi data
             video_url: uploadResponse.url,
-            name,
-            description,
-            title,
+            name: name || isExist.name,
+            description: description || isExist.description,
+            title: title || isExist.title,
+            chapter: {
+              update: {
+                where: { id: chapterId || isExist.chapterId }, // chapter id disini butuh chapter id yang sama dengan di table material
+                data: {
+                  duration,
+                },
+              },
+            },
+          },
+          include: {
+            chapter: true,
           },
         });
         return res.status(200).json({ error: false, message: "200 OK" });
       }
-
+      // jika video tidak terdapat update
+      await material.update({
+        where: { id: materialId },
+        data: {
+          chapterId: chapterId || isExist.chapterId,
+          name: name || isExist.name,
+          description: description || isExist.description,
+          title: title || isExist.title,
+        },
+      });
       return res.status(200).json({ error: false, message: "200 OK" });
     } catch (error) {
       console.log(error);
