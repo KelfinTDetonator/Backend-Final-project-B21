@@ -14,25 +14,27 @@ model User {
   id                   Int             @id @default(autoincrement())
   email                String
   password             String
-  reset_password_token String
-  role                 Role            @default(USER)
+  reset_password_token String?
+  role                 Role    @default(user)
   order                Order[]
   profile              Profile?
-  isActive             Boolean
-  createdAt            DateTime        @default(now()) @map("created_at")
-  updatedAt            DateTime        @updatedAt @map("updated_at")
+  otp                  String?
+  verified             Boolean? @default(false)
+  expiration_time      DateTime?
   CourseProgress       CourseProgress?
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 model Profile {
   id              Int      @id @default(autoincrement())
-  name            String
-  phone           String
-  city            String
-  nationality     String
-  profile_picture String
+  name            String?
+  phone           String?
+  city            String?
+  nationality     String?
+  profile_picture String?
   userId          Int      @unique @map("user_id")
   user            User     @relation(fields: [userId], references: [id])
   createdAt       DateTime @default(now()) @map("created_at")
@@ -62,6 +64,7 @@ model Course {
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
   CourseProgress CourseProgress?
+  Chapter        Chapter[]
 
   @@map("courses")
 }
@@ -106,8 +109,10 @@ model Category {
 
 model Chapter {
   id        Int        @id @default(autoincrement())
-  courseId  String     @map("course_id")
+  courseId  Int        @map("course_id")
   name      String
+  duration  Int?
+  course    Course     @relation(fields: [courseId], references: [id])
   material  Material[]
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
@@ -117,7 +122,7 @@ model Chapter {
 
 model Material {
   id             Int             @id @default(autoincrement())
-  chapterId      Int             @unique @map("chapter_id")
+  chapterId      Int             @map("chapter_id")
   video_url      String
   name           String
   description    String
@@ -147,6 +152,6 @@ enum Status {
 }
 
 enum Role {
-  ADMIN
-  USER
+  admin
+  user
 }
