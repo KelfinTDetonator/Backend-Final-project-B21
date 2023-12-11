@@ -69,7 +69,7 @@ module.exports = {
 
   getAll: async (req, res) => {
     try {
-      const { level, type, categoryId } = req.query;
+      const { level, type, categoryId, page = 1, pageSize = 2 } = req.query;
       const filter = {};
 
       if (level) {
@@ -82,16 +82,22 @@ module.exports = {
         filter.categoryId = parseInt(categoryId);
       }
 
+      const offset = (page - 1) * pageSize
+
       const data = await course.findMany({
         where: filter,
         include: {
-          category: true,
+          category: true
         },
-      });
+        take: parseInt(pageSize),
+        skip: offset
+      })
 
       return res.status(200).json({
         data,
-      });
+        currentPage: parseInt(page),
+        pageSize: parseInt(pageSize)
+      })
     } catch (error) {
       return res.status(500).json({
         error,

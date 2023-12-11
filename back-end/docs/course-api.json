@@ -1,0 +1,76 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Course API",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/api/v1/course": {
+			"get": {
+				"summary": "Get All Course",
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "Page number for pagination",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"description": "Number of items per page",
+						"required": false,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "level",
+						"in": "query",
+						"description": "Filter courses by level",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "type",
+						"in": "query",
+						"description": "Filter courses by type",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"responses": {
+				"200": {
+					"description": "Success",
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": { "type": "string" },
+									"price": { "type": "integer" },
+									"module": { "type": "integer" },
+									"description": { "type": "string" },
+									"imageUrl": { "type": "string" },
+									"author": { "type": "string" },
+									"groupUrl": { "type": "string" },
+									"level": { "type": "string" },
+									"type": { "type": "string" },
+									"categoryId": { "type": "string" }
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
