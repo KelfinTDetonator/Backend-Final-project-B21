@@ -83,7 +83,7 @@ model Order {
   user        User     @relation(fields: [userId], references: [id])
   courseId    Int      @unique @map("course_id")
   course      Course   @relation(fields: [courseId], references: [id])
-  amount      String
+  total_price Int
   methodPayment String
   status      Status   @default(UNPAID)
   createdAt   DateTime @default(now()) @map("created_at")
