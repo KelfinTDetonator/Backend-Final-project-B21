@@ -52,7 +52,6 @@ model Course {
   rating         Float?
   description    String
   imageUrl       String?         @map("image_url")
-  // progress       Boolean         @default(false)
   author         String
   groupUrl       String          @map("group_url")
   isActive       Boolean         @default(false) @map("is_active")
@@ -88,7 +87,7 @@ model Order {
   user           User     @relation(fields: [userId], references: [id])
   courseId       Int      @unique @map("course_id")
   course         Course   @relation(fields: [courseId], references: [id])
-  total_price    String
+  total_price    Int
   payment_method String
   status         Status   @default(UNPAID)
   createdAt      DateTime @default(now()) @map("created_at")
