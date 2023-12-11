@@ -86,7 +86,7 @@ model Order {
   id             Int      @id @default(autoincrement())
   userId         Int      @unique @map("user_id")
   user           User     @relation(fields: [userId], references: [id])
-  courseId       Int      @unique @map("course_id")
+  courseId       Int      @map("course_id")
   course         Course   @relation(fields: [courseId], references: [id])
   total_price    String
   payment_method String
