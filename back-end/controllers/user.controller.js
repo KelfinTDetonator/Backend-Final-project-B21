@@ -157,11 +157,12 @@ module.exports = {
         });
       }
 
-      res.status(200).json({
+      return res.status(200).json({
         status: "success",
         user: allUsers,
       });
     } catch (error) {
+      console.log(error);
       res.status(500).json({
         status: "failed",
         message: error.message,
@@ -253,7 +254,7 @@ module.exports = {
         },
         data: {
           otp,
-          expiration_time: AddSecondsToDate(new Date(), 10),
+          expiration_time: AddSecondsToDate(new Date(), 120),
         },
       });
       await nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`);
