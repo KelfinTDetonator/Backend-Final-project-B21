@@ -6,7 +6,6 @@ const oauth2Client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECR
 oauth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
 
 
-
 module.exports= {
   sendEmail: async (to, subject, text) => {
     const accesToken = await oauth2Client.getAccessToken();
@@ -25,9 +24,17 @@ module.exports= {
   
     transport.sendMail({ to, subject, text});
   },
+  imageKit: () => {
+    // eslint-disable-next-line no-new
+    new ImageKit({
+      publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+      privateKey: process.env.IMAGEKIT_SECRET_KEY,
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+    });
+  },
   imageKit: new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
     privateKey: process.env.IMAGEKIT_SECRET_KEY,
-    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT
-  })
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+  }),
 }

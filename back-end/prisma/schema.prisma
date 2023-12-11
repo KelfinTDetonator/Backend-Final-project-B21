@@ -21,10 +21,22 @@ model User {
   otp                  String?
   verified             Boolean? @default(false)
   expiration_time      DateTime?
+  notification         Notification[]
   createdAt            DateTime @default(now()) @map("created_at")
   updatedAt            DateTime @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  userId          Int      @map("user_id")
+  user            User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  @@map("notifications")
 }
 
 model Profile {
@@ -71,8 +83,8 @@ model Order {
   user        User     @relation(fields: [userId], references: [id])
   courseId    Int      @unique @map("course_id")
   course      Course   @relation(fields: [courseId], references: [id])
-  total_price String
-  // type_of_payment String
+  amount      String
+  methodPayment String
   status      Status   @default(UNPAID)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")

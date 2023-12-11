@@ -9,5 +9,6 @@ module.exports = {
     course : prisma.course,
     order: prisma.order,
     chapter: prisma.chapter,
-    material: prisma.material
+    material: prisma.material,
+    notification : prisma.notifications
 }

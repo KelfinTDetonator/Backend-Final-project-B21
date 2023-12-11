@@ -29,8 +29,8 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "profiles" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
+    "name" TEXT,
+    "phone" TEXT,
     "city" TEXT,
     "nationality" TEXT,
     "profile_picture" TEXT,
