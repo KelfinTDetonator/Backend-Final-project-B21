@@ -1,9 +1,18 @@
 const { order, course, user } = require("../models/index");
+const Joi = require('joi');
+
+const orderValidation = Joi.object({
+  courseId: Joi.number().integer().required(),
+  userId: Joi.number().integer().required(),
+  paymentMethod: Joi.string().min(4).required(),
+});
 
 module.exports = {
   createNewOrder: async (req, res) => {
     try {
-      const { totalPrice, paymentMethod } = req.body;
+      const { error } = await orderValidation.validateAsync(req.body);
+      if (error) { return res.status(400).json({ err: true, message: error.details[0].message }); }
+      const { paymentMethod } = req.body;
       const courseId = Number(req.body.courseId);
       const userId = Number(req.body.userId);
 
