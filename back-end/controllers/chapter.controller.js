@@ -49,31 +49,32 @@ module.exports = {
     const allMaterialsByChapterId = await material.findMany({
       where: { chapterId: chapterData.id },
     });
+    const test = await fetch(allMaterialsByChapterId[0].video_url);
+    console.log(test);
+    // let totalTime;
+    // const sum = async (total, val) => { // get duration from a video url
+    //   const videoDuration = await getVideoDurationInSeconds(val.video_url);
+    //   totalTime = await total + videoDuration;
 
-    let totalTime;
-    const sum = async (total, val) => { // get duration from a video url
-      const videoDuration = await getVideoDurationInSeconds(val.video_url);
-      totalTime = await total + videoDuration;
+    //   return totalTime;
+    // };
 
-      return totalTime;
-    };
+    // let duration = await allMaterialsByChapterId.reduce(sum, 0);
+    // /* if duration <= 60 seconds then round the number. if duration >= 60, convert into minutes */
+    // duration = (duration <= 60) ? Math.round(duration) : (Math.round(duration / 60));
 
-    let duration = await allMaterialsByChapterId.reduce(sum, 0);
-    /* if duration <= 60 seconds then round the number. if duration >= 60, convert into minutes */
-    duration = (duration <= 60) ? Math.round(duration) : (Math.round(duration / 60));
+    // await chapter.update({
+    //   where: {
+    //     id: chapterData.id,
+    //   },
+    //   data: {
+    //     name: (name) || chapterData.name,
+    //     duration,
+    //     courseId: (courseId) || chapterData.courseId,
+    //   },
+    // });
 
-    await chapter.update({
-      where: {
-        id: chapterData.id,
-      },
-      data: {
-        name: (name) || chapterData.name,
-        duration,
-        courseId: (courseId) || chapterData.courseId,
-      },
-    });
-
-    return res.status(200).json({ error: false, message: "Chapter data is up to date!" });
+    // return res.status(200).json({ error: false, message: "Chapter data is up to date!" });
   },
   getChapterById: async (req, res) => {
     try {

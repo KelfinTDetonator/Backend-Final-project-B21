@@ -22,7 +22,7 @@ module.exports = {
         fileName: req.file.originalname,
         folder: "Materials_Videos",
       });
-
+      console.log(uploadResponse);
       const uploadToDB = await material.create({
         data: {
           chapterId,
