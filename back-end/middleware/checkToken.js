@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const checkToken = (req, res, next) => {
+  try {
   let token = req.headers.authorization;
 
   if (!token) {
@@ -13,8 +14,8 @@ const checkToken = (req, res, next) => {
     token = token.slice("bearer".length).trim();
   }
 
-  try {
-    const jwtPayload = jwt.verify(token, "secretKey");
+  
+    const jwtPayload = jwt.verify(token, 'secretKey');
 
     if (!jwtPayload) {
       return res.status(403).json({
@@ -22,7 +23,11 @@ const checkToken = (req, res, next) => {
       });
     }
 
-    req.user = jwtPayload;
+    req.user = {
+      ...jwtPayload,
+      userId: jwtPayload.userId, // Sesuaikan dengan nama properti ID pada objek payload Anda
+    };
+    // req.user = jwtPayload; 
     req.userRole = jwtPayload.role;
     next();
   } catch (error) {
@@ -30,6 +35,7 @@ const checkToken = (req, res, next) => {
       error,
     });
   }
+  next();
 };
 
 module.exports = checkToken;

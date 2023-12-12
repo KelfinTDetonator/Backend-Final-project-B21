@@ -1,9 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
-const { profiles, user } = require("../models");
-const utils = require("../utils/index.js");
-const imageKit = require("../utils/index.js");
+const {  user, profile } = require('../models')
+const utils = require('../utils/index.js')
+const imageKit = require('../utils/index.js')
+
 
 module.exports = {
   create: async (req, res, next) => {
@@ -18,125 +19,130 @@ module.exports = {
         file: fileTostring,
       });
 
-      const profile = await profiles.create({
-        data: {
-          name,
-          phone,
-          city,
-          nationality,
-          profile_picture: uploadFile.url,
-        },
-      });
+            const profiles = await profile.create({
+                data: {
+                    name, 
+                    phone,
+                    city,
+                    nationality, 
+                    profile_picture: uploadFile.url
+                }
+            })
 
-      return res.status(201).json({
-        profile,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-  update: async (req, res, next) => {
-    try {
-      const {
-        name, phone, city, nationality, profile_picture,
-      } = req.body;
-      const fileTostring = req.file.buffer.toString("base64");
+            return res.status(201).json({
+                profiles
+            })
 
-      const uploadFile = await utils.imageKit.upload({
-        fileName: req.file.originalname,
-        file: fileTostring,
-      });
+        } catch (error) {
+            next(error)
+        }
+    },
+    update: async (req, res, next) => {
+        try {
+            let { name, phone, city, nationality, profile_picture} = req.body;
+            const fileTostring = req.file.buffer.toString('base64');
 
-      const profile = await profiles.update({
-        where: {
-          id: parseInt(req.params.id),
-        },
-        data: {
-          name,
-          phone,
-          city,
-          nationality,
-          profile_picture: uploadFile.url,
-        },
-      });
+            const userId = req.user.id; 
+            const uploadFile = await utils.imageKit.upload({
+                fileName: req.file.originalname,
+                file: fileTostring
+            });
 
-      return res.status(200).json({
-        profile,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-  getId: async (req, res) => {
-    try {
-      const getProfile = await profiles.findUnique({
-        where: {
-          id: parseInt(req.params.id),
-        },
-        include: {
-          user: true,
-        },
-      });
-      if (!getProfile) {
-        return res.status(404).json({
-          status: "failed",
-          message: `Pengguna dengan ID ${id} tidak ditemukan`,
-        });
-      }
-      return res.status(200).json({
-        status: "succes",
-        getProfile,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "failed",
-        message: error.message,
-      });
-    }
-  },
-  getAll: async (req, res) => {
-    try {
-      const allProfiles = await profiles.findMany({
-        include: {
-          user: true,
-        },
-      });
+            const profiles = await profile.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    name, 
+                    phone,
+                    city,
+                    nationality, 
+                    profile_picture: uploadFile.url
+                }
+            })
 
-      return res.status(200).json({
-        status: "success",
-        profiles: allProfiles,
-      });
-    } catch (error) {
-      res.status(500).json({
-        status: "failed",
-        message: error.message,
-      });
-    }
-  },
-  delete: async (req, res, next) => {
-    try {
-      const existingUser = await prisma.profile.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-      });
-      if (!existingUser) {
-        return res.status(404).json({
-          status: "failed",
-          message: `Pengguna dengan ID ${id} tidak ditemukan`,
-        });
-      }
+            return res.status(200).json({
+                profiles
+            })
 
-      const profile = await profiles.delete({
-        where: {
-          id: parseInt(req.params.id),
-        },
-      });
-      await user.delete({
-        where: {
-          id: parseInt(id),
-        },
-      });
+        } catch (error) {
+            next(error)
+        }
+    },
+    getId: async (req, res) => {
+        try {
+            const getProfile = await profile.findUnique({
+                where: {
+                    id: parseInt(req.params.id)
+                },
+                include: {
+                    user: true
+                }
+            })
+            if(!getProfile){
+                return res.status(404).json({
+                    status: 'failed',
+                    message: `Pengguna dengan ID ${id} tidak ditemukan`
+                });
+            }
+            return res.status(200).json({
+                status: "succes",
+                getProfile
+            })
+
+            
+            
+        } catch (error) {
+            res.status(500).json({
+                status: 'failed',
+                message: error.message
+            });
+        }
+    },
+    getAll: async (req, res) => {
+        try {
+            const allProfiles = await profile.findMany({
+                include: {
+                    user: true
+                }
+            });
+    
+            return res.status(200).json({
+                status: "success",
+                profiles: allProfiles
+            });
+        } catch (error) {
+            res.status(500).json({
+                status: 'failed',
+                message: error.message
+            });
+        }
+    },
+    delete: async (req, res, next) => {
+        try {
+
+            const existingUser = await prisma.profile.findUnique({
+                where: {
+                  id: parseInt(id)
+                }
+              });
+            if (!existingUser) {
+            return res.status(404).json({
+                status: 'failed',
+                message: `Pengguna dengan ID ${id} tidak ditemukan`
+            });
+            }
+
+            const profiles = await profile.delete({
+                where: {
+                    id: parseInt(req.user.id)
+                }
+            })
+            await user.delete({
+                where: {
+                  id: parseInt(id)
+                }
+              });
 
       res.status(200).json({
         status: "success",
