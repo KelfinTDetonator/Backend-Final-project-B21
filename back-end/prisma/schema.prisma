@@ -30,13 +30,14 @@ model User {
 }
 
 model Notification {
-  id Int @id @default(autoincrement())
-  title String
+  id          Int      @id @default(autoincrement())
+  title       String
   description String
-  userId          Int      @map("user_id")
-  user            User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+  user        User     @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
+
   @@map("notifications")
 }
 
@@ -58,9 +59,9 @@ model Profile {
 model Course {
   id             Int             @id @default(autoincrement())
   name           String
-  price          String
+  price          Int
   modul          Int
-  duration       String
+  duration       Int?
   rating         Float?
   description    String
   imageUrl       String?         @map("image_url")
