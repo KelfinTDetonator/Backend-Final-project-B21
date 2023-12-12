@@ -22,7 +22,8 @@ module.exports = {
         fileName: req.file.originalname,
         folder: "Materials_Videos",
       });
-
+      const durationVideo = uploadResponse.duration;
+      console.log(durationVideo);
       const uploadToDB = await material.create({
         data: {
           chapterId,

@@ -15,15 +15,15 @@ model User {
   email                String
   password             String
   reset_password_token String?
-  role                 Role    @default(user)
+  role                 Role            @default(user)
   order                Order[]
   profile              Profile?
   otp                  String?
-  verified             Boolean? @default(false)
+  verified             Boolean?        @default(false)
   expiration_time      DateTime?
   CourseProgress       CourseProgress?
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -124,6 +124,7 @@ model Material {
   id             Int             @id @default(autoincrement())
   chapterId      Int             @map("chapter_id")
   video_url      String
+  duration       Int
   name           String
   description    String
   title          String
