@@ -2,13 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
-const {
-  user, users, profile, notification,
-} = require("../models");
 // nodemailer = require('nodemailer')
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const {
+  user, users, profile, notification,
+} = require("../models");
 
 const nodemailer = require("../utils/index");
 
@@ -46,20 +46,20 @@ module.exports = {
           where: { email },
         });
 
-      if (existingUser) {
-        return res.status(500).json({
-          status: "failed",
-          message: `Email ${email} sudah ada`,
+        if (existingUser) {
+          return res.status(500).json({
+            status: "failed",
+            message: `Email ${email} sudah ada`,
+          });
+        }
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        const newUser = await user.create({
+          data: {
+            email,
+            password: encryptedPassword,
+            role,
+          },
         });
-      }
-      const encryptedPassword = await bcrypt.hash(password, 10);
-      const newUser = await user.create({
-        data: {
-          email,
-          password: encryptedPassword,
-          role
-        },
-      });
 
         const userProfile = await prisma.profile.create({
           data: {
@@ -90,35 +90,35 @@ module.exports = {
 
         const otp = generatedOTP();
 
-      await user.update({
-        where: {
-          id:userId
-        },
-        data: {
-          otp,
-          // expiration_time: AddMinutesToDate(new Date(), 10)
-          expiration_time: AddSecondsToDate(new Date(), 30)
-        }
-      });
+        await user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            otp,
+            // expiration_time: AddMinutesToDate(new Date(), 10)
+            expiration_time: AddSecondsToDate(new Date(), 30),
+          },
+        });
 
-      // let token = jwt.sign({ email: newUser.email }, JWT_SECRET_KEY);
-      nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`)
-      res.status(200).json({
-        status: 'success',
-        message: `Anda berhasil registrasi, silahkan cek email anda untuk verifikasi`
-      })
+        // let token = jwt.sign({ email: newUser.email }, JWT_SECRET_KEY);
+        nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`);
+        res.status(200).json({
+          status: "success",
+          message: "Anda berhasil registrasi, silahkan cek email anda untuk verifikasi",
+        });
       } catch (err) {
         res.status(400).json({
           status: "failed",
-          message: err.message
-        })
+          message: err.message,
+        });
       } next();
     } else {
-      const message = val.error.details[0].message
+      const { message } = val.error.details[0];
       res.status(400).json({
         status: "failed",
-        message
-      })
+        message,
+      });
     }
   },
   login: async (req, res, next) => {
@@ -174,13 +174,13 @@ module.exports = {
           email: user.email,
           role: user.role,
         },
-        'secretKey', 
-        { expiresIn: '1h' } 
+        "secretKey",
+        { expiresIn: "1h" },
       );
 
       res.status(200).json({
-        status: 'success',
-        message: 'Login berhasil',
+        status: "success",
+        message: "Login berhasil",
         user: {
           id: user.id,
           email: user.email,

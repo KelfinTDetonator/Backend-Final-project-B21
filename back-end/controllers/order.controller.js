@@ -1,5 +1,5 @@
+const Joi = require("joi");
 const { order, course, user } = require("../models/index");
-const Joi = require('joi');
 
 const orderValidation = Joi.object({
   courseId: Joi.number().integer().required(),
