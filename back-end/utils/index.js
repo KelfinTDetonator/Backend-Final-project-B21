@@ -37,16 +37,18 @@ module.exports = {
 
   getVideoDuration: async (arrayDB) => {
     let totalTime;
-    const sum = async (total, val) => { // get duration from a video url
-      const videoDuration = await getVideoDurationInSeconds(val.video_url);
-      totalTime = await total + videoDuration;
-
-      return totalTime;
+    const sum = (total, val) => { // get duration from a video url
+      // const videoDuration = await getVideoDurationInSeconds(val.video_url);
+      // totalTime = await total + videoDuration;
+      const videoDuration = val.duration;
+      return total + videoDuration;
     };
 
     let duration = await arrayDB.reduce(sum, 0);
+
     /* if duration <= 60 seconds then round the number. if duration >= 60, convert into minutes */
     duration = (duration <= 60) ? Math.round(duration) : (Math.round(duration / 60));
+
     return duration;
   },
 };

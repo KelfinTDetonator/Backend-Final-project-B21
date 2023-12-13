@@ -23,11 +23,11 @@ module.exports = {
         folder: "Materials_Videos",
       });
       const durationVideo = uploadResponse.duration;
-      console.log(durationVideo);
       const uploadToDB = await material.create({
         data: {
           chapterId,
           video_url: uploadResponse.url,
+          duration: Number(durationVideo),
           name,
           description,
           title,
@@ -105,7 +105,7 @@ module.exports = {
           where: { chapterId: isExist.chapterId },
         });
         const duration = await utils.getVideoDuration(allMaterialsByChapterId);
-        console.log(duration);
+
         await material.update({
           where: { id: materialId },
           data: {
