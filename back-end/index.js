@@ -5,8 +5,8 @@ const app = express();
 const port = process.env.PORT || 1234;
 const cors = require("cors");
 const path = require("path");
-const router = require("./routers/index");
 const morgan = require("morgan");
+const router = require("./routers/index");
 
 app.use(express.json({ strict: false }));
 app.use(morgan("dev"));
