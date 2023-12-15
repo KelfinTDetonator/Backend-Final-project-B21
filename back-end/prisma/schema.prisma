@@ -135,8 +135,7 @@ model Chapter {
 model Material {
   id             Int             @id @default(autoincrement())
   chapterId      Int             @map("chapter_id")
-  video_url      String
-  duration       Int
+  videoUrl       String          @map("video_url")
   name           String
   description    String
   title          String
