@@ -1,7 +1,6 @@
 const ImageKit = require("imagekit");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
-const { getVideoDurationInSeconds } = require("get-video-duration");
 
 const {
   GOOGLE_REFRESH_TOKEN, MAILER_EMAIL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
