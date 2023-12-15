@@ -8,6 +8,7 @@ const chapterRouter = require("./chapter.router");
 const register = require("./user.router");
 const newProfile = require("./profile.router");
 const orderRouter = require("./order.router");
+const notif = require("./notification.router");
 
 router.use("/course", courseRouter);
 router.use("/category", categoryRouter);
@@ -16,5 +17,6 @@ router.use("/material", materialRouter);
 router.use("/profile", newProfile);
 router.use("/auth", register);
 router.use("/order", orderRouter);
+router.use("/notification", notif);
 
 module.exports = router;

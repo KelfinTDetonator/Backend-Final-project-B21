@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
-const { profiles, user } = require("../models");
+const { user, profile } = require("../models");
 const utils = require("../utils/index.js");
 const imageKit = require("../utils/index.js");
 
@@ -18,7 +18,7 @@ module.exports = {
         file: fileTostring,
       });
 
-      const profile = await profiles.create({
+      const profiles = await profile.create({
         data: {
           name,
           phone,
@@ -29,7 +29,7 @@ module.exports = {
       });
 
       return res.status(201).json({
-        profile,
+        profiles,
       });
     } catch (error) {
       next(error);
@@ -42,14 +42,15 @@ module.exports = {
       } = req.body;
       const fileTostring = req.file.buffer.toString("base64");
 
+      const userId = req.user.id;
       const uploadFile = await utils.imageKit.upload({
         fileName: req.file.originalname,
         file: fileTostring,
       });
 
-      const profile = await profiles.update({
+      const profiles = await profile.update({
         where: {
-          id: parseInt(req.params.id),
+          id: userId,
         },
         data: {
           name,
@@ -61,7 +62,7 @@ module.exports = {
       });
 
       return res.status(200).json({
-        profile,
+        profiles,
       });
     } catch (error) {
       next(error);
@@ -69,7 +70,7 @@ module.exports = {
   },
   getId: async (req, res) => {
     try {
-      const getProfile = await profiles.findUnique({
+      const getProfile = await profile.findUnique({
         where: {
           id: parseInt(req.params.id),
         },
@@ -96,7 +97,7 @@ module.exports = {
   },
   getAll: async (req, res) => {
     try {
-      const allProfiles = await profiles.findMany({
+      const allProfiles = await profile.findMany({
         include: {
           user: true,
         },
@@ -127,9 +128,9 @@ module.exports = {
         });
       }
 
-      const profile = await profiles.delete({
+      const profiles = await profile.delete({
         where: {
-          id: parseInt(req.params.id),
+          id: parseInt(req.user.id),
         },
       });
       await user.delete({
