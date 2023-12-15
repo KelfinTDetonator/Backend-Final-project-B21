@@ -1,5 +1,4 @@
-const { chapter, material, course } = require("../models/index");
-const utils = require("../utils");
+const { chapter, course } = require("../models/index");
 
 module.exports = {
   createChapter: async (req, res) => {
@@ -17,7 +16,7 @@ module.exports = {
         data: {
           name,
           courseId,
-          duration: null,
+          duration: Number(req.body.duration) || null,
         },
       });
 
@@ -31,8 +30,10 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
+
   patchChapterById: async (req, res) => {
     const chapterId = Number(req.params.id);
+    const duration = Number(req.body.duration);
     if (!chapterId) { return res.status(400).json({ error: true, message: "Bad request" }); }
 
     const courseId = Number(req.body.courseId);
@@ -45,12 +46,6 @@ module.exports = {
       const courseData = await course.findUnique({ where: { id: courseId } });
       if (!courseData) { return res.status(404).json({ error: true, message: "Course not found" }); }
     }
-
-    const allMaterialsByChapterId = await material.findMany({
-      where: { chapterId: chapterData.id },
-    });
-
-    const duration = await utils.getVideoDuration(allMaterialsByChapterId);
 
     await chapter.update({
       where: {
@@ -65,6 +60,7 @@ module.exports = {
 
     return res.status(200).json({ error: false, message: "Chapter data is up to date!" });
   },
+
   getChapterById: async (req, res) => {
     try {
       const chapterId = Number(req.params.id);
@@ -83,6 +79,7 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
+
   getAllChapter: async (req, res) => {
     try {
       const allChapter = await chapter.findMany();
@@ -98,6 +95,7 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
+
   deleteChapterById: async (req, res) => {
     try {
       const chapterId = Number(req.params.id);
