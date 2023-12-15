@@ -1,4 +1,5 @@
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require("@prisma/client");
+
 const prisma = new PrismaClient();
 const {  user, profile } = require('../models')
 const utils = require('../utils/index.js')
@@ -6,15 +7,17 @@ const imageKit = require('../utils/index.js')
 
 
 module.exports = {
-    create: async (req, res, next) => {
-        try {
-            let { name, phone, city, nationality, profile_picture} = req.body;
-            const fileTostring = req.file.buffer.toString('base64');
+  create: async (req, res, next) => {
+    try {
+      const {
+        name, phone, city, nationality, profile_picture,
+      } = req.body;
+      const fileTostring = req.file.buffer.toString("base64");
 
-            const uploadFile = await utils.imageKit.upload({
-                fileName: req.file.originalname,
-                file: fileTostring
-            });
+      const uploadFile = await utils.imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring,
+      });
 
             const profiles = await profile.create({
                 data: {
@@ -141,12 +144,12 @@ module.exports = {
                 }
               });
 
-            res.status(200).json({
-                status: 'success',
-                message: `Pengguna dengan ID ${id} berhasil dihapus`
-            });
-        } catch (error) {
-            next(error)
-        }
+      res.status(200).json({
+        status: "success",
+        message: `Pengguna dengan ID ${id} berhasil dihapus`,
+      });
+    } catch (error) {
+      next(error);
     }
-}
+  },
+};

@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const checkToken = (req, res, next) => {
   try {
@@ -6,12 +6,12 @@ const checkToken = (req, res, next) => {
 
   if (!token) {
     return res.status(403).json({
-      error: 'Masukkan token terlebih dahulu',
+      error: "Masukkan token terlebih dahulu",
     });
   }
 
-  if (token.toLowerCase().startsWith('bearer')) {
-    token = token.slice('bearer'.length).trim();
+  if (token.toLowerCase().startsWith("bearer")) {
+    token = token.slice("bearer".length).trim();
   }
 
   
@@ -19,7 +19,7 @@ const checkToken = (req, res, next) => {
 
     if (!jwtPayload) {
       return res.status(403).json({
-        error: 'Belum login',
+        error: "Belum login",
       });
     }
 
@@ -31,7 +31,7 @@ const checkToken = (req, res, next) => {
     req.userRole = jwtPayload.role;
   } catch (error) {
     return res.status(403).json({
-      error
+      error,
     });
   }
   next();

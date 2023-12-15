@@ -18,10 +18,10 @@ function AddSecondsToDate(date, seconds) {
 }
 
 const generateResetToken = () => {
-  const token = crypto.randomBytes(20).toString('hex');
+  const token = crypto.randomBytes(20).toString("hex");
   return token;
 };
-      
+
 module.exports = {
   register: async (req, res, next) => {
     const schema = Joi.object({
