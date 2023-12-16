@@ -8,7 +8,6 @@ module.exports = {
       const {
         name, description, title, videoUrl,
       } = req.body;
-      console.log(name, description, title, videoUrl);
       if (!(name && description && title && videoUrl)) {
         return res.status(400).json({ error: true, message: "Bad Request" });
       }
