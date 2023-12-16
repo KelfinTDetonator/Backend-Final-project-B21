@@ -1,4 +1,4 @@
-const { category } = require("../models/index");
+const { category, course } = require("../models/index");
 
 module.exports = {
   createCategory: async (req, res) => {
@@ -46,6 +46,19 @@ module.exports = {
   getAllCategory: async (req, res) => {
     try {
       const allData = await category.findMany();
+      const allChapterId = allData.map((val) => val.id);
+
+      const categoryImage = await course.findMany({
+        where: {
+          categoryId: { in: allChapterId },
+        },
+        take: allChapterId.length,
+        distinct: ["categoryId"],
+      });
+
+      allData.forEach((val, index) => {
+        allData[index].imageUrl = categoryImage[index].imageUrl;
+      });
 
       return res.status(200).json({
         error: false,
