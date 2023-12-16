@@ -1,5 +1,5 @@
-const { getVideoDurationInSeconds } = require("get-video-duration");
 const { chapter, material, course } = require("../models/index");
+const utils = require("../utils");
 
 module.exports = {
   createChapter: async (req, res) => {
@@ -50,17 +50,7 @@ module.exports = {
       where: { chapterId: chapterData.id },
     });
 
-    let totalTime;
-    const sum = async (total, val) => { // get duration from a video url
-      const videoDuration = await getVideoDurationInSeconds(val.video_url);
-      totalTime = await total + videoDuration;
-
-      return totalTime;
-    };
-
-    let duration = await allMaterialsByChapterId.reduce(sum, 0);
-    /* if duration <= 60 seconds then round the number. if duration >= 60, convert into minutes */
-    duration = (duration <= 60) ? Math.round(duration) : (Math.round(duration / 60));
+    const duration = await utils.getVideoDuration(allMaterialsByChapterId);
 
     await chapter.update({
       where: {
