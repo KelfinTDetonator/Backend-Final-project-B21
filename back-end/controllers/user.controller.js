@@ -12,10 +12,10 @@ crypto = require("crypto");
 
 const nodemailer = require("../utils/index.js");
 
-// function AddMinutesToDate(date, minutes, seconds) {
-//     return new Date(date.getTime() + minutes * 60000);
-//     return new Date(date.getTime() + seconds * 1000);
-// }
+function AddMinutesToDate(date, minutes, seconds) {
+  return new Date(date.getTime() + minutes * 60000);
+  // return new Date(date.getTime() + seconds * 1000);
+}
 function AddSecondsToDate(date, seconds) {
   return new Date(date.getTime() + seconds * 1000);
 }
@@ -212,6 +212,7 @@ module.exports = {
         user: allUsers,
       });
     } catch (error) {
+      console.log(error);
       res.status(500).json({
         status: "failed",
         message: error.message,

@@ -60,9 +60,9 @@ model Profile {
 model Course {
   id             Int             @id @default(autoincrement())
   name           String
-  price          String
+  price          Int
   modul          Int
-  duration       String
+  duration       Int?
   rating         Float?
   description    String
   imageUrl       String?         @map("image_url")
@@ -99,7 +99,7 @@ model Order {
   id             Int      @id @default(autoincrement())
   userId         Int      @unique @map("user_id")
   user           User     @relation(fields: [userId], references: [id])
-  courseId       Int      @unique @map("course_id")
+  courseId       Int      @map("course_id")
   course         Course   @relation(fields: [courseId], references: [id])
   total_price    Int
   payment_method String
