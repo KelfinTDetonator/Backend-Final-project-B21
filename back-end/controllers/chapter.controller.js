@@ -1,5 +1,4 @@
-const { getVideoDurationInSeconds } = require("get-video-duration");
-const { chapter, material, course } = require("../models/index");
+const { chapter, course } = require("../models/index");
 
 module.exports = {
   createChapter: async (req, res) => {
@@ -17,7 +16,7 @@ module.exports = {
         data: {
           name,
           courseId,
-          duration: null,
+          duration: Number(req.body.duration) || null,
         },
       });
 
@@ -31,8 +30,10 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
+
   patchChapterById: async (req, res) => {
     const chapterId = Number(req.params.id);
+    const duration = Number(req.body.duration);
     if (!chapterId) { return res.status(400).json({ error: true, message: "Bad request" }); }
 
     const courseId = Number(req.body.courseId);
@@ -46,36 +47,20 @@ module.exports = {
       if (!courseData) { return res.status(404).json({ error: true, message: "Course not found" }); }
     }
 
-    const allMaterialsByChapterId = await material.findMany({
-      where: { chapterId: chapterData.id },
+    await chapter.update({
+      where: {
+        id: chapterData.id,
+      },
+      data: {
+        name: (name) || chapterData.name,
+        duration,
+        courseId: (courseId) || chapterData.courseId,
+      },
     });
-    const test = await fetch(allMaterialsByChapterId[0].video_url);
-    console.log(test);
-    // let totalTime;
-    // const sum = async (total, val) => { // get duration from a video url
-    //   const videoDuration = await getVideoDurationInSeconds(val.video_url);
-    //   totalTime = await total + videoDuration;
 
-    //   return totalTime;
-    // };
-
-    // let duration = await allMaterialsByChapterId.reduce(sum, 0);
-    // /* if duration <= 60 seconds then round the number. if duration >= 60, convert into minutes */
-    // duration = (duration <= 60) ? Math.round(duration) : (Math.round(duration / 60));
-
-    // await chapter.update({
-    //   where: {
-    //     id: chapterData.id,
-    //   },
-    //   data: {
-    //     name: (name) || chapterData.name,
-    //     duration,
-    //     courseId: (courseId) || chapterData.courseId,
-    //   },
-    // });
-
-    // return res.status(200).json({ error: false, message: "Chapter data is up to date!" });
+    return res.status(200).json({ error: false, message: "Chapter data is up to date!" });
   },
+
   getChapterById: async (req, res) => {
     try {
       const chapterId = Number(req.params.id);
@@ -94,6 +79,7 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
+
   getAllChapter: async (req, res) => {
     try {
       const allChapter = await chapter.findMany();
@@ -109,6 +95,7 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
+
   deleteChapterById: async (req, res) => {
     try {
       const chapterId = Number(req.params.id);

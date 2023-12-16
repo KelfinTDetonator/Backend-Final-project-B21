@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
@@ -135,8 +136,7 @@ model Chapter {
 model Material {
   id             Int             @id @default(autoincrement())
   chapterId      Int             @map("chapter_id")
-  video_url      String
-  duration       Int
+  videoUrl       String          @map("video_url")
   name           String
   description    String
   title          String
