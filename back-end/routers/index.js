@@ -8,7 +8,6 @@ const chapterRouter = require("./chapter.router");
 const register = require("./user.router");
 const newProfile = require("./profile.router");
 const notif = require('./notification.router')
-
 const orderRouter = require("./order.router");
 
 router.use("/course", courseRouter);
@@ -18,7 +17,6 @@ router.use("/material", materialRouter);
 router.use("/profile", newProfile);
 router.use("/auth", register);
 router.use('/notification', notif)
-
 router.use("/order", orderRouter);
 
 module.exports = router;
