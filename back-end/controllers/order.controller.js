@@ -10,8 +10,13 @@ const orderValidation = Joi.object({
 module.exports = {
   createNewOrder: async (req, res) => {
     try {
+      req.body.userId = req.user.id;
       const { error } = await orderValidation.validateAsync(req.body);
-      if (error) { return res.status(400).json({ err: true, message: error.details[0].message }); }
+
+      if (error) {
+        return res.status(400).json({ err: true, message: error.details[0].message });
+      }
+
       const { paymentMethod } = req.body;
       const courseId = Number(req.body.courseId);
       const userId = Number(req.body.userId);
