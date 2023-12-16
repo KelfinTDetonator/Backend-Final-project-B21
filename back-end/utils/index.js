@@ -50,4 +50,7 @@ module.exports = {
 
     return duration;
   },
+
+  // midtrans config
+  
 };
