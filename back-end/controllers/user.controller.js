@@ -2,15 +2,15 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
-// nodemailer = require('nodemailer')
-const Joi = require("joi");
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
 const {
   user, users, profile, notification,
 } = require("../models");
+// nodemailer = require('nodemailer')
+Joi = require("joi");
+jwt = require("jsonwebtoken");
+crypto = require("crypto");
 
-const nodemailer = require("../utils/index");
+const nodemailer = require("../utils/index.js");
 
 function AddMinutesToDate(date, minutes, seconds) {
   return new Date(date.getTime() + minutes * 60000);
@@ -53,7 +53,7 @@ module.exports = {
           });
         }
         const encryptedPassword = await bcrypt.hash(password, 10);
-        const newUser = await user.create({
+        const newUser = await prisma.user.create({
           data: {
             email,
             password: encryptedPassword,
@@ -90,7 +90,7 @@ module.exports = {
 
         const otp = generatedOTP();
 
-        await user.update({
+        await prisma.user.update({
           where: {
             id: userId,
           },
@@ -207,7 +207,7 @@ module.exports = {
         });
       }
 
-      return res.status(200).json({
+      res.status(200).json({
         status: "success",
         user: allUsers,
       });
