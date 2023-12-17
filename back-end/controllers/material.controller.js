@@ -5,8 +5,9 @@ module.exports = {
     try {
       const chapterId = Number(req.body.chapterId);
       console.log(req.body.chapterId);
-      const { name, description, title, videoUrl } = req.body;
-      console.log(name, description, title, videoUrl);
+      const {
+        name, description, title, videoUrl,
+      } = req.body;
       if (!(name && description && title && videoUrl)) {
         return res.status(400).json({ error: true, message: "Bad Request" });
       }
