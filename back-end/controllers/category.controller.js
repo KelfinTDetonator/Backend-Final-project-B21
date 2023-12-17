@@ -55,12 +55,13 @@ module.exports = {
         take: allChapterId.length,
         distinct: ["categoryId"],
       });
-      console.log(categoryImage[0].imageUrl);
+
       allData.forEach((val, index) => {
-        if (categoryImage[index].imageUrl === undefined) {
-          allData[index].imageUrl = null;
+        if (!(categoryImage[index])) {
+          allData[index].imageUrl = null || "";
+        } else if (categoryImage[index]) {
+          allData[index].imageUrl = categoryImage[index].imageUrl;
         }
-        allData[index].imageUrl = categoryImage[index].imageUrl;
       });
 
       return res.status(200).json({
