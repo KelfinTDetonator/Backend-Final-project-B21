@@ -55,7 +55,7 @@ module.exports = {
         take: allChapterId.length,
         distinct: ["categoryId"],
       });
-      console.log(categoryImage);
+      console.log(categoryImage[0].imageUrl);
       allData.forEach((val, index) => {
         allData[index].imageUrl = categoryImage[index].imageUrl;
       });
