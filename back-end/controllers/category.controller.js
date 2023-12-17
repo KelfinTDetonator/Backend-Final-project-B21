@@ -47,7 +47,7 @@ module.exports = {
     try {
       const allData = await category.findMany();
       const allChapterId = allData.map((val) => val.id);
-
+      console.log(allChapterId);
       const categoryImage = await course.findMany({
         where: {
           categoryId: { in: allChapterId },
@@ -55,7 +55,7 @@ module.exports = {
         take: allChapterId.length,
         distinct: ["categoryId"],
       });
-
+      console.log(categoryImage);
       allData.forEach((val, index) => {
         allData[index].imageUrl = categoryImage[index].imageUrl;
       });
