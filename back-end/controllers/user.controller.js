@@ -3,22 +3,22 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const {
-  user, users, profile, notification,
-} = require("../models");
+  user, profile, notification,
+} = require("../models/index");
 // nodemailer = require('nodemailer')
-Joi = require("joi");
-jwt = require("jsonwebtoken");
-crypto = require("crypto");
+const Joi = require("joi");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const nodemailer = require("../utils/index.js");
 
-// function AddMinutesToDate(date, minutes, seconds) {
-//     return new Date(date.getTime() + minutes * 60000);
-//     return new Date(date.getTime() + seconds * 1000);
-// }
-function AddSecondsToDate(date, seconds) {
-  return new Date(date.getTime() + seconds * 1000);
+function AddMinutesToDate(date, minutes, seconds) {
+  return new Date(date.getTime() + minutes * 60000);
+  // return new Date(date.getTime() + seconds * 1000);
 }
+// function AddSecondsToDate(date, seconds) {
+//   return new Date(date.getTime() + seconds * 1000);
+// }
 
 const generateResetToken = () => {
   const token = crypto.randomBytes(20).toString("hex");
@@ -96,8 +96,8 @@ module.exports = {
           },
           data: {
             otp,
-            // expiration_time: AddMinutesToDate(new Date(), 10)
-            expiration_time: AddSecondsToDate(new Date(), 30),
+            expiration_time: AddMinutesToDate(new Date(), 5),
+            // expiration_time: AddSecondsToDate(new Date(), 30),
           },
         });
 
@@ -212,6 +212,7 @@ module.exports = {
         user: allUsers,
       });
     } catch (error) {
+      console.log(error);
       res.status(500).json({
         status: "failed",
         message: error.message,
@@ -270,7 +271,7 @@ module.exports = {
     try {
       const { email } = req.body;
 
-      const Email = await user.findOne({
+      const Email = await prisma.user.findFirst({
         where: {
           email,
         },
@@ -294,16 +295,19 @@ module.exports = {
 
       const otp = generatedOTP();
 
-      await user.update({
-        otp,
-        expiration_time: AddMinutesToDate(new Date(), 10),
-      }, {
+      await prisma.user.update({
         where: {
-          email,
+          id: Email.id,
+        },
+        data: {
+          otp,
+          expiration_time: AddMinutesToDate(new Date(), 10),
         },
       });
       await nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`);
+      return res.status(200).json({ error: false, message: "Email Activation berhasil!" });
     } catch (err) {
+      console.log(err);
       res.status(400).json({
         status: "failed",
         message: err.message,
