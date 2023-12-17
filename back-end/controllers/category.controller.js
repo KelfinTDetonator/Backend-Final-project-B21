@@ -57,6 +57,9 @@ module.exports = {
       });
       console.log(categoryImage[0].imageUrl);
       allData.forEach((val, index) => {
+        if (categoryImage[index].imageUrl === undefined) {
+          allData[index].imageUrl = null;
+        }
         allData[index].imageUrl = categoryImage[index].imageUrl;
       });
 
