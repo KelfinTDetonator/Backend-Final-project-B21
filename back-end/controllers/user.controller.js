@@ -2,13 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
-const {
-  user, profile, notification,
-} = require("../models/index");
 // nodemailer = require('nodemailer')
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const {
+  user, profile, notification,
+} = require("../models/index");
 
 const nodemailer = require("../utils/index.js");
 
