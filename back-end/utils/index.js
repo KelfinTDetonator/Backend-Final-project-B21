@@ -52,5 +52,5 @@ module.exports = {
   },
 
   // midtrans config
-  
+
 };
