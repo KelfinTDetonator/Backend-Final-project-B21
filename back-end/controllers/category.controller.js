@@ -54,6 +54,7 @@ module.exports = {
         },
         take: allChapterId.length,
         distinct: ["categoryId"],
+        orderBy: { categoryId: "asc" },
       });
 
       allData.forEach((val, index) => {
