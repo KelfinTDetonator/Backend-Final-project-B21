@@ -9,12 +9,9 @@ const { user, users, profile, notification } = require("../models"),
     
 const nodemailer = require("../utils/index.js");
 
-// function AddMinutesToDate(date, minutes, seconds) {
-//     return new Date(date.getTime() + minutes * 60000);
-//     return new Date(date.getTime() + seconds * 1000);
-// }
-function AddSecondsToDate(date, seconds) {
-  return new Date(date.getTime() + seconds * 1000);
+function AddMinutesToDate(date, minutes, seconds) {
+    return new Date(date.getTime() + minutes * 60000);
+    return new Date(date.getTime() + seconds * 1000);
 }
 
 const generateResetToken = () => {
@@ -91,8 +88,8 @@ module.exports = {
         },
         data: {
           otp,
-          // expiration_time: AddMinutesToDate(new Date(), 10)
-          expiration_time: AddSecondsToDate(new Date(), 30)
+          expiration_time: AddMinutesToDate(new Date(), 10)
+          // expiration_time: AddSecondsToDate(new Date(), 30)
         }
       });
       
@@ -103,18 +100,12 @@ module.exports = {
         message: `Anda berhasil registrasi, silahkan cek email anda untuk verifikasi`
       })
       } catch (err) {
-        res.status(400).json({
-          status: "failed",
-          message: err.message
-        })
-      } next();
-    } else {
-      const message = val.error.details[0].message
-      res.status(400).json({
-        status: "failed",
-        message
-      })
-    }
+        next(err); 
+        // return res.status(500).json({
+        //   status: 'failed',
+        //   message: 'Gagal mengirim email verifikasi. Silahkan coba lagi nanti.'
+        // });
+      }}
   },
   login: async (req, res, next) => {
     try {
@@ -265,10 +256,8 @@ module.exports = {
       try {
         const email = req.body.email
     
-        const Email = await user.findOne({
-          where: {
-            email
-          }
+        const Email = await prisma.user.findFirst({
+          where: {email}
         })
     
         if (Email === null) {
@@ -289,9 +278,11 @@ module.exports = {
     
         let otp = generatedOTP()
     
-        await user.update({
-          otp: otp,
-          expiration_time: AddMinutesToDate(new Date(), 10)
+        await prisma.user.update({
+          data:{
+            otp: otp,
+            expiration_time: AddMinutesToDate(new Date(), 10)
+          }
         }, {
           where: {
             email
@@ -378,7 +369,8 @@ module.exports = {
         },
         include: {
           profile: true,
-          notification: true
+          notification: true,
+          order: true
         }
       });
   
