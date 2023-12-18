@@ -20,13 +20,50 @@ module.exports = {
       const { paymentMethod } = req.body;
       const courseId = Number(req.body.courseId);
       const userId = Number(req.body.userId);
-
+      console.log(userId);
       const checkCourse = await course.findUnique({ where: { id: courseId } });
       if (!checkCourse) { return res.status(404).json({ error: true, message: `Course with ID: ${courseId} is not exist` }); }
 
       const checkUser = await user.findUnique({ where: { id: userId } });
+
       if (!checkUser) { return res.status(404).json({ error: true, message: `User with ID: ${userId} is not exist` }); }
 
+      const checkOrder = await order.findFirst({
+        where: {
+          courseId,
+          userId,
+        },
+      });
+
+      if (checkOrder) {
+        return res.status(409).json({ error: true, message: "Duplicate! Finish your payment" });
+      }
+
+      const data = await order.create({
+        data: {
+          total_price: checkCourse.price,
+          payment_method: paymentMethod,
+          courseId,
+          userId,
+        },
+      });
+
+      return res.status(201).json({
+        error: false,
+        message: "Course is added to the cart",
+        order_data: data,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+  },
+
+  patchOrder: async (req, res) => {
+    try {
+      req.body.userId = req.user.id;
+      const courseId = Number(req.body.courseId);
+      const userId = Number(req.body.userId);
       const checkOrder = await order.findFirst({
         where: {
           courseId,
@@ -51,20 +88,6 @@ module.exports = {
           order_data: data,
         });
       }
-      const data = await order.create({
-        data: {
-          total_price: checkCourse.price,
-          payment_method: paymentMethod,
-          courseId,
-          userId,
-        },
-      });
-
-      return res.status(201).json({
-        error: false,
-        message: "Course is added to the cart",
-        order_data: data,
-      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: true, message: "Internal Server Error" });

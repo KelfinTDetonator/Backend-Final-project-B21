@@ -34,7 +34,6 @@ const checkToken = (req, res, next) => {
       error,
     });
   }
-  next();
 };
 
 module.exports = checkToken;

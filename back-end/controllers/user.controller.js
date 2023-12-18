@@ -2,13 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
+// nodemailer = require('nodemailer')
+const Joi = require("joi");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const {
   user, users, profile, notification,
 } = require("../models");
-// nodemailer = require('nodemailer')
-Joi = require("joi");
-jwt = require("jsonwebtoken");
-crypto = require("crypto");
 
 const nodemailer = require("../utils/index.js");
 
@@ -271,7 +271,7 @@ module.exports = {
     try {
       const { email } = req.body;
 
-      const Email = await user.findOne({
+      const Email = await prisma.user.findFirst({
         where: {
           email,
         },
@@ -295,15 +295,17 @@ module.exports = {
 
       const otp = generatedOTP();
 
-      await user.update({
-        otp,
-        expiration_time: AddMinutesToDate(new Date(), 10),
-      }, {
+      await prisma.user.update({
         where: {
-          email,
+          id: Email.id,
+        },
+        data: {
+          otp,
+          expiration_time: AddMinutesToDate(new Date(), 10),
         },
       });
       await nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`);
+      return res.status(200).json({ error: false, message: "Email Activation berhasil!" });
     } catch (err) {
       res.status(400).json({
         status: "failed",

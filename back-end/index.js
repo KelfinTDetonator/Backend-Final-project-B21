@@ -14,6 +14,8 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use("/api/v1", router);
 app.use(express.static(path.join(__dirname, "views")));
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
 app.get("*", (req, res) => res.status(404).json({
   error: "endpoint is not registered",
