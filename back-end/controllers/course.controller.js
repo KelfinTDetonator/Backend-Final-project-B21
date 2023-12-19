@@ -57,8 +57,8 @@ module.exports = {
         },
         include: {
           category: true,
-          Chapter: true
-        }
+          Chapter: true,
+        },
       });
 
       return res.status(201).json({
@@ -66,14 +66,16 @@ module.exports = {
       });
     } catch (error) {
       return res.status(500).json({
-        error
-      })
+        error,
+      });
     }
   },
 
   getAll: async (req, res) => {
     try {
-      const { level, type, categoryId, page = 1, pageSize = 6 } = req.query;
+      const {
+        level, type, categoryId, page = 1, pageSize = 6,
+      } = req.query;
       const filter = {};
 
       if (level) {
@@ -86,38 +88,38 @@ module.exports = {
         filter.categoryId = parseInt(categoryId);
       }
 
-      const offset = (page - 1) * pageSize
+      const offset = (page - 1) * pageSize;
 
       const courses = await course.findMany({
         where: filter,
         include: {
           category: true,
           Chapter: {
-            select:{duration: true}
-          }
+            select: { duration: true },
+          },
         },
         take: parseInt(pageSize),
-        skip: offset
-      })
+        skip: offset,
+      });
 
       const courseTotalDuration = courses.map((course) => {
         const chapterDurations = course.Chapter.map((chapter) => chapter.duration);
-        const totalDuration = chapterDurations.reduce((sum, duration) => sum + (duration || 0), 0)
+        const totalDuration = chapterDurations.reduce((sum, duration) => sum + (duration || 0), 0);
         return {
           ...course,
           totalDuration,
-        }
-      })
+        };
+      });
 
       return res.status(200).json({
         courses: courseTotalDuration,
         currentPage: parseInt(page),
-        pageSize: parseInt(pageSize)
-      })
+        pageSize: parseInt(pageSize),
+      });
     } catch (error) {
       return res.status(500).json({
         error,
-      })
+      });
     }
   },
 

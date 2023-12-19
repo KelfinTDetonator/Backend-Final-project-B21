@@ -1,3 +1,4 @@
+require("dotenv").config();
 const ImageKit = require("imagekit");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");

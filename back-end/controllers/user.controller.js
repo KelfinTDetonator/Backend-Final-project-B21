@@ -16,9 +16,6 @@ function AddMinutesToDate(date, minutes, seconds) {
   return new Date(date.getTime() + minutes * 60000);
   // return new Date(date.getTime() + seconds * 1000);
 }
-// function AddSecondsToDate(date, seconds) {
-//   return new Date(date.getTime() + seconds * 1000);
-// }
 
 const generateResetToken = () => {
   const token = crypto.randomBytes(20).toString("hex");
@@ -108,17 +105,12 @@ module.exports = {
           message: "Anda berhasil registrasi, silahkan cek email anda untuk verifikasi",
         });
       } catch (err) {
-        res.status(400).json({
-          status: "failed",
-          message: err.message,
-        });
-      } next();
-    } else {
-      const { message } = val.error.details[0];
-      res.status(400).json({
-        status: "failed",
-        message,
-      });
+        next(err);
+        // return res.status(500).json({
+        //   status: 'failed',
+        //   message: 'Gagal mengirim email verifikasi. Silahkan coba lagi nanti.'
+        // });
+      }
     }
   },
   login: async (req, res, next) => {
@@ -385,6 +377,7 @@ module.exports = {
         include: {
           profile: true,
           notification: true,
+          order: true,
         },
       });
 

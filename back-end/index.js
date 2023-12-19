@@ -5,16 +5,16 @@ const app = express();
 const port = process.env.PORT || 1234;
 const cors = require("cors");
 const path = require("path");
-const router = require("./routers/index");
 const morgan = require("morgan");
-const swaggerUi = require('swagger-ui-express')
-const swaggerJson = require('./openapi.json')
+const swaggerUi = require("swagger-ui-express");
+const router = require("./routers/index");
+const swaggerJson = require("./openapi.json");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ strict: false }));
 app.use(morgan("dev"));
 app.use(cors());
-app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerJson));
+app.use("/documentation", swaggerUi.serve, swaggerUi.setup(swaggerJson));
 app.use("/api/v1", router);
 app.use(express.static(path.join(__dirname, "views")));
 
