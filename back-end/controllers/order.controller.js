@@ -24,12 +24,25 @@ module.exports = {
         },
       });
   
-  
-  
       const course = await prisma.course.findUnique({
         where: { id: Number(courseId) },
       });
   
+      const userHasCourse = await prisma.order.findFirst({
+        where: {
+          userId: user.id,
+          courseId: course.id,
+        },
+      });
+  
+      if (userHasCourse) {
+        return res.status(400).json({
+          status: false,
+          message: "Anda sudah membeli kelas ini.",
+          data: null,
+        });
+      }
+
       if(!course || !user) {
         return res.status(404).json({
           status: false,
@@ -44,14 +57,14 @@ module.exports = {
           courseId: Number(courseId),
           userId: parseInt(req.user.id),
           payment_method,
-          createdAt: utils.formattedDate(new Date()),
-          updatedAt: utils.formattedDate(new Date()) 
+          createdAt: new Date(),
+          updatedAt: new Date() 
         },
       });
   
       let parameter = {
         transaction_details: {
-          order_id: newPayment.id + 102,
+          order_id: newPayment.id + 150,
           gross_amount: course.price,
         },
         credit_card: {
