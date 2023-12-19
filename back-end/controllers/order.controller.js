@@ -61,9 +61,18 @@ module.exports = {
 
   patchOrder: async (req, res) => {
     try {
-      req.body.userId = req.user.id;
-      const courseId = Number(req.body.courseId);
+      // req.body.userId = req.user.id;
       const userId = Number(req.body.userId);
+      const courseId = Number(req.body.courseId);
+      const { paymentMethod } = req.body;
+
+      const checkCourse = await course.findUnique({ where: { id: courseId } });
+      if (!checkCourse) { return res.status(404).json({ error: true, message: `Course with ID: ${courseId} is not exist` }); }
+
+      const checkUser = await user.findUnique({ where: { id: userId } });
+
+      if (!checkUser) { return res.status(404).json({ error: true, message: `User with ID: ${userId} is not exist` }); }
+
       const checkOrder = await order.findFirst({
         where: {
           courseId,
