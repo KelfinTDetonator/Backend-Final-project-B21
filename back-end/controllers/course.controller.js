@@ -51,25 +51,29 @@ module.exports = {
 
   getId: async (req, res) => {
     try {
-      const data = await course.findUnique({
+      const courses = await course.findUnique({
         where: {
           id: parseInt(req.params.id),
         },
+        include: {
+          category: true,
+          Chapter: true
+        }
       });
 
       return res.status(201).json({
-        data,
+        courses,
       });
     } catch (error) {
       return res.status(500).json({
-        error,
-      });
+        error
+      })
     }
   },
 
   getAll: async (req, res) => {
     try {
-      const { level, type, categoryId } = req.query;
+      const { level, type, categoryId, page = 1, pageSize = 6 } = req.query;
       const filter = {};
 
       if (level) {
@@ -82,20 +86,38 @@ module.exports = {
         filter.categoryId = parseInt(categoryId);
       }
 
-      const data = await course.findMany({
+      const offset = (page - 1) * pageSize
+
+      const courses = await course.findMany({
         where: filter,
         include: {
           category: true,
+          Chapter: {
+            select:{duration: true}
+          }
         },
-      });
+        take: parseInt(pageSize),
+        skip: offset
+      })
+
+      const courseTotalDuration = courses.map((course) => {
+        const chapterDurations = course.Chapter.map((chapter) => chapter.duration);
+        const totalDuration = chapterDurations.reduce((sum, duration) => sum + (duration || 0), 0)
+        return {
+          ...course,
+          totalDuration,
+        }
+      })
 
       return res.status(200).json({
-        data,
-      });
+        courses: courseTotalDuration,
+        currentPage: parseInt(page),
+        pageSize: parseInt(pageSize)
+      })
     } catch (error) {
       return res.status(500).json({
         error,
-      });
+      })
     }
   },
 

@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "prisma generate",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "npx eslint --fix ./"
@@ -33,6 +32,7 @@
     "eslint": "^8.54.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.0",
+    "morgan": "^1.10.0",
     "nodemon": "^3.0.1"
   }
 }
