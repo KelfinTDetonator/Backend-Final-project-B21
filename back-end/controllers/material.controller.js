@@ -35,9 +35,25 @@ module.exports = {
 
   getAllMaterial: async (req, res) => {
     try {
-      const data = await material.findMany();
+      let data2 = {};
+      const data3 = [];
 
-      return res.status(200).json({ error: false, videos: data });
+      const data = await material.findMany({
+        include: { chapter: true },
+      });
+
+      for (const iterator of data) {
+        const {
+          chapter: {
+            courseId,
+          },
+        } = iterator;
+        delete iterator.chapter;
+        data2 = { ...iterator, courseId };
+        data3.push(data2);
+      }
+
+      return res.status(200).json({ error: false, videos: data3 });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: true, message: "Internal Server Error" });
