@@ -64,7 +64,7 @@ module.exports = {
   
       let parameter = {
         transaction_details: {
-          order_id: newPayment.id + 150,
+          order_id: `${newPayment.id}-${generateRandomNumber()}`,
           gross_amount: course.price,
         },
         credit_card: {
@@ -76,6 +76,10 @@ module.exports = {
           phone: user.profile.phone,
         },
       };
+
+      function generateRandomNumber() {
+        return Math.floor(Math.random() * 1000000);
+      }
   
       let transaction = await snap.createTransaction(parameter);
   
