@@ -85,7 +85,7 @@ module.exports = {
 
       const transaction = await snap.createTransaction(parameter);
 
-      res.status(201).json({
+      return res.status(201).json({
         status: true,
         message: "",
         data: {
