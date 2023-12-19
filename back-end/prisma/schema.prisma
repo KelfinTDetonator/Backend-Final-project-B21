@@ -11,19 +11,19 @@ datasource db {
 }
 
 model User {
-  id                   Int             @id @default(autoincrement())
+  id                   Int              @id @default(autoincrement())
   email                String
   password             String
   reset_password_token String?
-  role                 Role            @default(user)
+  role                 Role             @default(user)
   order                Order[]
   profile              Profile?
   otp                  String?
-  verified             Boolean?        @default(false)
+  verified             Boolean?         @default(false)
   expiration_time      DateTime?
-  CourseProgress       CourseProgress?
-  createdAt            DateTime        @default(now()) @map("created_at")
-  updatedAt            DateTime        @updatedAt @map("updated_at")
+  CourseProgress       CourseProgress[]
+  createdAt            DateTime         @default(now()) @map("created_at")
+  updatedAt            DateTime         @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -70,7 +70,7 @@ model Course {
 
 model CourseProgress {
   id         Int      @id @default(autoincrement())
-  userId     Int      @unique @map("user_id")
+  userId     Int      @map("user_id")
   user       User     @relation(fields: [userId], references: [id])
   courseId   Int      @unique @map("course_id")
   course     Course   @relation(fields: [courseId], references: [id])
@@ -110,7 +110,7 @@ model Chapter {
   id        Int        @id @default(autoincrement())
   courseId  Int        @map("course_id")
   name      String
-  duration  Int?
+  duration  Int
   course    Course     @relation(fields: [courseId], references: [id])
   material  Material[]
   createdAt DateTime   @default(now()) @map("created_at")

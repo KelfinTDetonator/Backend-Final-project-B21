@@ -5,7 +5,7 @@ module.exports = {
   createChapter: async (req, res) => {
     try {
       const { name } = req.body;
-      const courseId = Number(req.body.courseId);
+      const courseId = Number(req.body.courseId); const duration = Number(req.body.duration);
 
       if (!(name && courseId)) { return res.status(400).json({ error: true, message: "Bad Request" }); }
 
@@ -17,7 +17,7 @@ module.exports = {
         data: {
           name,
           courseId,
-          duration: null,
+          duration,
         },
       });
 
