@@ -6,11 +6,8 @@ const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const {
-  user, profile, notification,
-} = require("../models/index");
 
-const nodemailer = require("../utils/index.js");
+const nodemailer = require("../utils/index");
 
 function AddMinutesToDate(date, minutes, seconds) {
   return new Date(date.getTime() + minutes * 60000);

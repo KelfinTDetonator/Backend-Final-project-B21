@@ -2,24 +2,26 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const midtransClient = require("midtrans-client");
-const {
-  order, course, user, profile,
-} = require("../models/index");
+const { order } = require("../models/index");
 
 const { PAYMENT_SERVER_KEY } = process.env;
 const utils = require("../utils/index");
+
+const snap = new midtransClient.Snap({
+  // Set to true if you want Production Environment (accept real transaction).
+  isProduction: false,
+  serverKey: PAYMENT_SERVER_KEY,
+});
+
+function generateRandomNumber() {
+  return Math.floor(Math.random() * 1000000);
+}
 
 module.exports = {
   createPayment: async (req, res, next) => {
     try {
       const { courseId } = req.params;
       const { payment_method } = req.body;
-
-      const snap = new midtransClient.Snap({
-        // Set to true if you want Production Environment (accept real transaction).
-        isProduction: false,
-        serverKey: PAYMENT_SERVER_KEY,
-      });
 
       const user = await prisma.user.findUnique({
         where: { id: Number(req.user.id) },
@@ -81,10 +83,6 @@ module.exports = {
         },
       };
 
-      function generateRandomNumber() {
-        return Math.floor(Math.random() * 1000000);
-      }
-
       const transaction = await snap.createTransaction(parameter);
 
       res.status(201).json({
@@ -100,7 +98,7 @@ module.exports = {
     }
   },
 
-  handlePaymentNotification: async (req, res) => {
+  handlePaymentNotification: async (req, res, next) => {
     try {
       const notification = {
         currency: req.body.currency,

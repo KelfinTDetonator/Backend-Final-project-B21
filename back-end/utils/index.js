@@ -36,7 +36,6 @@ module.exports = {
     }),
 
   getVideoDuration: async (arrayDB) => {
-    let totalTime;
     const sum = (total, val) => { // get duration from a video url
       // const videoDuration = await getVideoDurationInSeconds(val.video_url);
       // totalTime = await total + videoDuration;
