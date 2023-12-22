@@ -182,6 +182,90 @@ module.exports = {
       });
     }
   },
+
+  loginAdmin: async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+
+      const loginUser = await prisma.user.findFirst({
+        where: { email },
+      });
+
+      const loginId = loginUser.id;
+  
+      const user = await prisma.user.findFirst({
+        where: { email }
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          status: 'failed',
+          message: 'User tidak ditemukan',
+        });
+      }
+
+      if(user.role != "admin") {
+        return res.status(403).json({
+          status: 'failed',
+          message: 'anda bukan admin',
+        });
+      }
+  
+      // Verifikasi password
+      const passwordMatch = await bcrypt.compare(password, user.password);
+  
+      if (!passwordMatch) {
+        return res.status(401).json({
+          status: 'failed',
+          message: 'Password salah',
+        });
+      }
+  
+      // Periksa status verifikasi
+      if (!user.verified) {
+        return res.status(403).json({
+          status: 'failed',
+          message: 'Akun belum diverifikasi',
+        });
+      }
+      
+      const notif = await prisma.notification.create({
+        data: {
+          title: "Berhasil login",
+          description: "Selamat anda berhasil login",
+          userId: loginId
+        }
+      })
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        'secretKey', 
+        { expiresIn: '1h' } 
+      );
+
+      res.status(200).json({
+        status: 'success',
+        message: 'Login berhasil',
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        token,
+        notif
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 'failed',
+        message: error.message
+      });
+    }
+  },
+
   getAllUsers: async (req, res) => {
     try {
       const allUsers = await prisma.user.findMany();
