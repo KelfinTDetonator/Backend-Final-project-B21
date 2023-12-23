@@ -5,28 +5,55 @@ const { google } = require("googleapis");
 const { getVideoDurationInSeconds } = require("get-video-duration");
 
 const {
-  GOOGLE_REFRESH_TOKEN, MAILER_EMAIL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+  GOOGLE_REFRESH_TOKEN, MAILER_EMAIL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SMTP_PASS, SMTP_USER
 } = process.env;
 const oauth2Client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
 oauth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
 
 module.exports = {
   sendEmail: async (to, subject, text) => {
-    const accesToken = await oauth2Client.getAccessToken();
+    // const accesToken = await oauth2Client.getAccessToken();
 
+    // const transport = nodemailer.createTransport({
+    //   service: "gmail",
+    //   auth: {
+    //     type: "OAuth2",
+    //     user: MAILER_EMAIL,
+    //     clientId: GOOGLE_CLIENT_ID,
+    //     clientSecret: GOOGLE_CLIENT_SECRET,
+    //     refreshToken: GOOGLE_REFRESH_TOKEN,
+    //     accessToken: accesToken,
+    //   },
+    // });
+
+    // transport.sendMail({ to, subject, text });
     const transport = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      secure: true,
       auth: {
-        type: "OAuth2",
-        user: MAILER_EMAIL,
-        clientId: GOOGLE_CLIENT_ID,
-        clientSecret: GOOGLE_CLIENT_SECRET,
-        refreshToken: GOOGLE_REFRESH_TOKEN,
-        accessToken: accesToken,
+        user: SMTP_USER,
+        pass: SMTP_PASS,
       },
     });
 
-    transport.sendMail({ to, subject, text });
+    const mailOptions = {
+      from: SMTP_USER,
+      to,
+      subject,
+      text,
+    };
+
+    await new Promise((resolve, reject) => {
+      transport.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(info);
+          resolve(info);
+        }
+      });
+    });
   },
   imageKit:
     // eslint-disable-next-line no-new
