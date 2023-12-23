@@ -19,6 +19,9 @@ router.use("/profile", newProfile);
 router.use("/auth", register);
 router.use("/order", orderRouter);
 router.use("/payment", paymentRouter);
+router.use("/done", async (req, res) => {
+  res.render("success");
+});
 router.use("/notification", notif);
 
 module.exports = router;
