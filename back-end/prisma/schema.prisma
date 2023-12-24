@@ -96,13 +96,13 @@ model CourseProgress {
 
 model Order {
   id             Int      @id @default(autoincrement())
-  userId         Int      @unique @map("user_id")
+  userId         Int      @map("user_id")
   user           User     @relation(fields: [userId], references: [id])
-  courseId       Int      @map("course_id")
+  courseId       Int      @unique @map("course_id")
   course         Course   @relation(fields: [courseId], references: [id])
   total_price    Int
-  payment_method String
-  status         Status   @default(UNPAID)
+  payment_method String?
+  status         String   @default("UNPAID")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 

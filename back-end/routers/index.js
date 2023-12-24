@@ -9,6 +9,7 @@ const register = require("./user.router");
 const newProfile = require("./profile.router");
 const orderRouter = require("./order.router");
 const paymentRouter = require("./payment.router");
+const paidRouter = require("./paid.router");
 const notif = require("./notification.router");
 
 router.use("/course", courseRouter);
@@ -19,9 +20,7 @@ router.use("/profile", newProfile);
 router.use("/auth", register);
 router.use("/order", orderRouter);
 router.use("/payment", paymentRouter);
-router.use("/done", async (req, res) => {
-  res.render("success");
-});
+router.use("/done", paidRouter);
 router.use("/notification", notif);
 
 module.exports = router;

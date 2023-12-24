@@ -1,5 +1,7 @@
 const midtrans = require("../utils/midtrans");
-const { order, course, profile, user } = require("../models/index");
+const {
+  order, course, profile, user,
+} = require("../models/index");
 
 module.exports = {
   payment: async (req, res) => {

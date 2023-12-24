@@ -36,7 +36,7 @@ module.exports = {
       });
 
       if (checkOrder) {
-        return res.status(409).json({ error: true, message: "Duplicate! Finish your payment" });
+        return res.status(409).json({ error: true, message: "Duplicate! Finish your previous payment" });
       }
 
       const data = await order.create({
