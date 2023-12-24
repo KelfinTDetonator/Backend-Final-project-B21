@@ -7,8 +7,8 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const {
-  user, users, profile, notification,
-} = require("../models");
+  user, profile, notification,
+} = require("../models/index");
 
 const nodemailer = require("../utils/index.js");
 
@@ -16,9 +16,9 @@ function AddMinutesToDate(date, minutes, seconds) {
   return new Date(date.getTime() + minutes * 60000);
   // return new Date(date.getTime() + seconds * 1000);
 }
-function AddSecondsToDate(date, seconds) {
-  return new Date(date.getTime() + seconds * 1000);
-}
+// function AddSecondsToDate(date, seconds) {
+//   return new Date(date.getTime() + seconds * 1000);
+// }
 
 const generateResetToken = () => {
   const token = crypto.randomBytes(20).toString("hex");
@@ -96,8 +96,8 @@ module.exports = {
           },
           data: {
             otp,
-            // expiration_time: AddMinutesToDate(new Date(), 10)
-            expiration_time: AddSecondsToDate(new Date(), 30),
+            expiration_time: AddMinutesToDate(new Date(), 5),
+            // expiration_time: AddSecondsToDate(new Date(), 30),
           },
         });
 
@@ -139,6 +139,88 @@ module.exports = {
         return res.status(404).json({
           status: "failed",
           message: "User tidak ditemukan",
+        });
+      }
+
+      // Verifikasi password
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        return res.status(401).json({
+          status: "failed",
+          message: "Password salah",
+        });
+      }
+
+      // Periksa status verifikasi
+      if (!user.verified) {
+        return res.status(403).json({
+          status: "failed",
+          message: "Akun belum diverifikasi",
+        });
+      }
+
+      const notif = await prisma.notification.create({
+        data: {
+          title: "Berhasil login",
+          description: "Selamat anda berhasil login",
+          userId: loginId,
+        },
+      });
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        "secretKey",
+        { expiresIn: "1h" },
+      );
+
+      res.status(200).json({
+        status: "success",
+        message: "Login berhasil",
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        token,
+        notif,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "failed",
+        message: error.message,
+      });
+    }
+  },
+  loginAdmin: async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+
+      const loginUser = await prisma.user.findFirst({
+        where: { email },
+      });
+
+      const loginId = loginUser.id;
+
+      const user = await prisma.user.findFirst({
+        where: { email },
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          status: "failed",
+          message: "User tidak ditemukan",
+        });
+      }
+
+      if (user.role != "admin") {
+        return res.status(403).json({
+          status: "failed",
+          message: "anda bukan admin",
         });
       }
 
@@ -307,6 +389,7 @@ module.exports = {
       await nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`);
       return res.status(200).json({ error: false, message: "Email Activation berhasil!" });
     } catch (err) {
+      console.log(err);
       res.status(400).json({
         status: "failed",
         message: err.message,

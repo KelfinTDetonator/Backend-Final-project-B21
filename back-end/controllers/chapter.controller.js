@@ -1,4 +1,4 @@
-const { chapter, course } = require("../models/index");
+const { chapter, course, material } = require("../models/index");
 
 module.exports = {
   createChapter: async (req, res) => {
@@ -85,7 +85,9 @@ module.exports = {
 
   getAllChapter: async (req, res) => {
     try {
-      const allChapter = await chapter.findMany();
+      const allChapter = await chapter.findMany({
+        include: { material: true },
+      });
       if (!allChapter) { return res.status(404).json({ error: true, message: "Chapter is not created yet!" }); }
 
       return res.status(200).json({

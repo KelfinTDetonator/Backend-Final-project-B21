@@ -1,3 +1,4 @@
+require("dotenv").config();
 const ImageKit = require("imagekit");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
@@ -10,18 +11,17 @@ oauth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
 
 module.exports = {
   sendEmail: async (to, subject, text) => {
-    const accesToken = await oauth2Client.getAccessToken();
+    // const accesToken = await oauth2Client.getAccessToken();
 
     const transport = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        type: "OAuth2",
-        user: MAILER_EMAIL,
-        clientId: GOOGLE_CLIENT_ID,
-        clientSecret: GOOGLE_CLIENT_SECRET,
-        refreshToken: GOOGLE_REFRESH_TOKEN,
-        accessToken: accesToken,
-      },
+      service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth:{
+          user: process.env.USER,
+          pass: process.env.PASS,
+        },
     });
 
     transport.sendMail({ to, subject, text });
