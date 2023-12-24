@@ -94,7 +94,7 @@ module.exports = {
       });
       
       // let token = jwt.sign({ email: newUser.email }, JWT_SECRET_KEY);
-      nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`)
+      await nodemailer.sendEmail(email, "Email Activation", `ini adalah otp anda ${otp}`)
       res.status(200).json({
         status: 'success',
         message: `Anda berhasil registrasi, silahkan cek email anda untuk verifikasi`

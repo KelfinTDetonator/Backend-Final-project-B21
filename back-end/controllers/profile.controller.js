@@ -71,27 +71,24 @@ module.exports = {
     },
     getId: async (req, res) => {
         try {
-            const getProfile = await profile.findUnique({
-                where: {
-                    id: parseInt(req.params.id)
-                },
-                include: {
-                    user: true
-                }
-            })
-            if(!getProfile){
-                return res.status(404).json({
-                    status: 'failed',
-                    message: `Pengguna dengan ID ${id} tidak ditemukan`
-                });
-            }
-            return res.status(200).json({
-                status: "succes",
-                getProfile
-            })
-
-            
-            
+          const getProfile = await profile.findUnique({
+              where: {
+                  id: req.user.id
+              },
+              include: {
+                  user: true
+              }
+          })
+          if(!getProfile){
+              return res.status(404).json({
+                  status: 'failed',
+                  message: `Pengguna dengan ID ${id} tidak ditemukan`
+              });
+          }
+          return res.status(200).json({
+              status: "succes",
+              getProfile
+          })
         } catch (error) {
             res.status(500).json({
                 status: 'failed',

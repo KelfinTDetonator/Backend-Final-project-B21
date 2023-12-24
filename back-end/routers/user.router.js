@@ -4,7 +4,7 @@ const express = require('express'),
     checkRole = require('../middleware/checkRole'),
     checkToken = require('../middleware/checkToken')
 
-router.delete('/:id',checkToken, checkRole(["admin","user"]), controller.deleteUser)
+router.delete('/:id', controller.deleteUser)
 router.get('/',checkToken, checkRole(["admin", "user"]),controller.getAllUsers)
 router.get('/:id', controller.getById)
 router.post('/otp', controller.otp)
