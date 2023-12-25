@@ -11,4 +11,5 @@ module.exports = {
   chapter: prisma.chapter,
   material: prisma.material,
   notification: prisma.notification,
+  courseProgress: prisma.courseProgress
 };
