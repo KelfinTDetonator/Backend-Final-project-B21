@@ -14,14 +14,14 @@ module.exports = {
     // const accesToken = await oauth2Client.getAccessToken();
 
     const transport = nodemailer.createTransport({
-      service: 'gmail',
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth:{
-          user: process.env.USER,
-          pass: process.env.PASS,
-        },
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.USER,
+        pass: process.env.PASS,
+      },
     });
 
     transport.sendMail({ to, subject, text });
@@ -35,7 +35,6 @@ module.exports = {
     }),
 
   getVideoDuration: async (arrayDB) => {
-    let totalTime;
     const sum = (total, val) => { // get duration from a video url
       // const videoDuration = await getVideoDurationInSeconds(val.video_url);
       // totalTime = await total + videoDuration;
@@ -50,4 +49,7 @@ module.exports = {
 
     return duration;
   },
+
+  // midtrans config
+
 };
