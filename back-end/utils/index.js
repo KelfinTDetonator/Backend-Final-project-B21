@@ -11,17 +11,16 @@ oauth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
 
 module.exports = {
   sendEmail: async (to, subject, text) => {
-    const accesToken = await oauth2Client.getAccessToken();
+    // const accesToken = await oauth2Client.getAccessToken();
 
     const transport = nodemailer.createTransport({
       service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
-        type: "OAuth2",
-        user: MAILER_EMAIL,
-        clientId: GOOGLE_CLIENT_ID,
-        clientSecret: GOOGLE_CLIENT_SECRET,
-        refreshToken: GOOGLE_REFRESH_TOKEN,
-        accessToken: accesToken,
+        user: process.env.USER,
+        pass: process.env.PASS,
       },
     });
 
@@ -50,4 +49,7 @@ module.exports = {
 
     return duration;
   },
+
+  // midtrans config
+
 };
