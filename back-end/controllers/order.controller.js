@@ -35,7 +35,9 @@ module.exports = {
       });
 
       if (checkOrder) {
-        return res.status(409).json({ error: true, message: "Duplicate! Finish your previous payment" });
+        return res.status(409).json({ error: true, message: "Duplicate! Order is already exist" });
+      } if (checkOrder.status === "UNPAID") {
+        return res.status(409).json({ error: true, message: "Duplicate! Please finish your previous payment" });
       }
 
       const data = await order.create({
@@ -61,9 +63,10 @@ module.exports = {
 
   patchOrder: async (req, res) => {
     try {
-      // req.body.userId = req.user.id;
+      req.body.userId = req.user.id;
       const userId = Number(req.body.userId);
       const courseId = Number(req.body.courseId);
+      const status = req.body.status;
       const { paymentMethod } = req.body;
 
       const checkCourse = await course.findUnique({ where: { id: courseId } });
@@ -88,6 +91,7 @@ module.exports = {
             payment_method: paymentMethod,
             courseId,
             userId,
+            status: status || checkCourse.status,
           },
         });
 

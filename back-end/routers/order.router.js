@@ -5,7 +5,7 @@ const checkRole = require("../middleware/checkRole");
 
 // todo: checkRole(["user"]),
 router.post("/create", checkToken, checkRole(["user", "admin"]), orderController.createNewOrder);
-
+router.patch("/update", checkToken, checkRole(["admin"]), orderController.patchOrder);
 router.delete("/delete/:id", orderController.deleteCourseFromOrder);
 
 module.exports = router;
