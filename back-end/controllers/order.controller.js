@@ -78,55 +78,6 @@ module.exports = {
 
       const checkOrder = await order.findFirst({
         where: {
-          courseId,
-          userId,
-        },
-      });
-
-      if (checkOrder) {
-        return res.status(409).json({ error: true, message: "Duplicate! Order is already exist" });
-      } if (checkOrder.status === "UNPAID") {
-        return res.status(409).json({ error: true, message: "Duplicate! Please finish your previous payment" });
-      }
-
-      const data = await order.create({
-        data: {
-          total_price: checkCourse.price,
-          payment_method: paymentMethod || null,
-          courseId,
-          userId,
-          status: (checkCourse.price === 0) ? "PAID" : "UNPAID",
-        },
-      });
-
-      return res.status(201).json({
-        error: false,
-        message: "Course is added to the cart",
-        order_data: data,
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ error: true, message: "Internal Server Error" });
-    }
-  },
-
-  patchOrder: async (req, res) => {
-    try {
-      req.body.userId = req.user.id;
-      const userId = Number(req.body.userId);
-      const courseId = Number(req.body.courseId);
-      const status = req.body.status;
-      const { paymentMethod } = req.body;
-
-      const checkCourse = await course.findUnique({ where: { id: courseId } });
-      if (!checkCourse) { return res.status(404).json({ error: true, message: `Course with ID: ${courseId} is not exist` }); }
-
-      const checkUser = await user.findUnique({ where: { id: userId } });
-
-      if (!checkUser) { return res.status(404).json({ error: true, message: `User with ID: ${userId} is not exist` }); }
-
-      const checkOrder = await order.findFirst({
-        where: {
           userId: user.id,
           courseId: course.id,
         },
