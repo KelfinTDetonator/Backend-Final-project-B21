@@ -4,7 +4,7 @@ const { order, course, user } = require("../models/index");
 const orderValidation = Joi.object({
   courseId: Joi.number().integer().required(),
   userId: Joi.number().integer().required(),
-  paymentMethod: Joi.string().min(4).required(),
+  // paymentMethod: Joi.string().min(4).required(),
 });
 
 module.exports = {
@@ -20,7 +20,6 @@ module.exports = {
       const { paymentMethod } = req.body;
       const courseId = Number(req.body.courseId);
       const userId = Number(req.body.userId);
-      console.log(userId);
       const checkCourse = await course.findUnique({ where: { id: courseId } });
       if (!checkCourse) { return res.status(404).json({ error: true, message: `Course with ID: ${courseId} is not exist` }); }
 
@@ -42,9 +41,10 @@ module.exports = {
       const data = await order.create({
         data: {
           total_price: checkCourse.price,
-          payment_method: paymentMethod,
+          payment_method: paymentMethod || null,
           courseId,
           userId,
+          status: (checkCourse.price === 0) ? "PAID" : "UNPAID",
         },
       });
 
