@@ -20,16 +20,19 @@ module.exports = {
         return res.status(400).json({ error: "Invalid type" })
       }
 
+      const { name, description, target, author } = req.body;
+
       const data = await course.create({
         data: {
-          name: req.body.name,
+          name,
           price: parseInt(req.body.price),
           modul: parseInt(req.body.modul),
           rating: parseFloat(req.body.rating),
-          description: req.body.description,
-          imageUrl: uploadFile.url,
-          author: req.body.author,
+          description,
+          target,
+          author,
           groupUrl: req.body.group_url,
+          imageUrl: uploadFile.url,
           level: req.body.level,
           type: req.body.type,
           isActive: Boolean(req.body.is_active) || false,

@@ -63,6 +63,7 @@ model Course {
   modul       Int
   rating      Float?
   description String
+  target      String[]
   imageUrl    String?   @map("image_url")
   author      String
   groupUrl    String    @map("group_url")
@@ -74,7 +75,6 @@ model Course {
   order       Order[]
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-  // CourseProgress CourseProgress[]
   Chapter     Chapter[]
 
   @@map("courses")
@@ -82,13 +82,13 @@ model Course {
 
 model CourseProgress {
   id         Int      @id @default(autoincrement())
-  // userId     Int      @map("user_id")
-  // user       User     @relation(fields: [userId], references: [id])
-  materialId Int      @map("material_id")
-  material   Material @relation(fields: [materialId], references: [id])
   isComplete Boolean  @map("is_complete")
-  // orderId    Int?     @map("order_id")
-  // Order      Order?   @relation(fields: [orderId], references: [id])
+  materialId Int      @map("material_id")
+  Material   Material @relation(fields: [materialId], references: [id])
+  orderId    Int      @map("order_id")
+  Order      Order    @relation(fields: [orderId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("course_progress")
 }
@@ -104,6 +104,7 @@ model Order {
   course         Course           @relation(fields: [courseId], references: [id])
   createdAt      DateTime         @default(now()) @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")
+  CourseProgress CourseProgress[]
 
   @@map("orders")
 }

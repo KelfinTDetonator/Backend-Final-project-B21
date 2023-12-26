@@ -9,7 +9,7 @@ const register = require("./user.router");
 const newProfile = require("./profile.router");
 const orderRouter = require("./order.router");
 const notif = require("./notification.router");
-
+const courseProgressRouter = require("./courseProgress.router");
 router.use("/course", courseRouter);
 router.use("/category", categoryRouter);
 router.use("/chapter", chapterRouter);
@@ -18,5 +18,5 @@ router.use("/profile", newProfile);
 router.use("/auth", register);
 router.use("/order", orderRouter);
 router.use("/notification", notif);
-
+router.use("/progress", courseProgressRouter)
 module.exports = router;
