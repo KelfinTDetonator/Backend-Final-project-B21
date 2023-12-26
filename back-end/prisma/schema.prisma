@@ -137,7 +137,7 @@ model Material {
   videoUrl       String           @map("video_url")
   name           String
   description    String
-  title          String
+  title          String?
   chapter        Chapter          @relation(fields: [chapterId], references: [id])
   createdAt      DateTime         @default(now()) @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")
