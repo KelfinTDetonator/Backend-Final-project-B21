@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 model User {
@@ -15,28 +15,29 @@ model User {
   email                String
   password             String
   reset_password_token String?
-  role                 Role    @default(user)
+  role                 Role            @default(user)
   order                Order[]
   profile              Profile?
   otp                  String?
-  verified             Boolean? @default(false)
+  verified             Boolean?        @default(false)
   expiration_time      DateTime?
   notification         Notification[]
   CourseProgress       CourseProgress?
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+  createdAt            DateTime        @default(now()) @map("created_at")
+  updatedAt            DateTime        @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 model Notification {
-  id Int @id @default(autoincrement())
-  title String
+  id          Int      @id @default(autoincrement())
+  title       String
   description String
-  userId          Int      @map("user_id")
-  user            User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+  user        User     @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
+
   @@map("notifications")
 }
 
@@ -58,9 +59,9 @@ model Profile {
 model Course {
   id             Int             @id @default(autoincrement())
   name           String
-  price          String
+  price          Int
   modul          Int
-  duration       String
+  duration       Int?
   rating         Float?
   description    String
   imageUrl       String?         @map("image_url")
@@ -69,7 +70,7 @@ model Course {
   isActive       Boolean         @default(false) @map("is_active")
   level          Level?
   type           Type            @default(FREE)
-  categoryId     Int             @unique @map("category_id")
+  categoryId     Int             @map("category_id")
   category       Category        @relation(fields: [categoryId], references: [id])
   order          Order[]
   createdAt      DateTime        @default(now()) @map("created_at")
@@ -134,7 +135,7 @@ model Chapter {
 model Material {
   id             Int             @id @default(autoincrement())
   chapterId      Int             @map("chapter_id")
-  video_url      String
+  videoUrl       String          @map("video_url")
   name           String
   description    String
   title          String

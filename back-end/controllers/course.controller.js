@@ -23,9 +23,9 @@ module.exports = {
       const data = await course.create({
         data: {
           name: req.body.name,
-          price: req.body.price,
+          price: parseInt(req.body.price),
           modul: parseInt(req.body.modul),
-          duration: req.body.duration,
+          duration: parseInt(req.body.duration),
           rating: parseFloat(req.body.rating),
           description: req.body.description,
           imageUrl: uploadFile.url,
@@ -123,9 +123,9 @@ module.exports = {
         },
         data: {
           name: req.body.name,
-          price: req.body.price,
+          price: parseInt(req.body.price),
           modul: parseInt(req.body.modul),
-          duration: req.body.duration,
+          duration: parseInt(req.body.duration),
           rating: req.body.rating,
           description: req.body.description,
           imageUrl: uploadFile.url,

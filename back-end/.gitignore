@@ -1,4 +1,6 @@
 .env
 node_modules
 .eslintrc.json
-prisma/migrations
+vercel.json
+/prisma/migrations/*
+!prisma/migrations/migration_lock.toml
