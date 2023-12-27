@@ -6,25 +6,25 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL") // uses connection pooling
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id                   Int             @id @default(autoincrement())
+  id                   Int            @id @default(autoincrement())
   email                String
   password             String
   reset_password_token String?
-  role                 Role            @default(user)
+  role                 Role           @default(user)
   order                Order[]
   profile              Profile?
   otp                  String?
-  verified             Boolean?        @default(false)
+  verified             Boolean?       @default(false)
   expiration_time      DateTime?
   notification         Notification[]
-  CourseProgress       CourseProgress?
-  createdAt            DateTime        @default(now()) @map("created_at")
-  updatedAt            DateTime        @updatedAt @map("updated_at")
+  // CourseProgress  CourseProgress[]
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -57,54 +57,54 @@ model Profile {
 }
 
 model Course {
-  id             Int             @id @default(autoincrement())
-  name           String
-  price          String
-  modul          Int
-  duration       String
-  rating         Float?
-  description    String
-  imageUrl       String?         @map("image_url")
-  author         String
-  groupUrl       String          @map("group_url")
-  isActive       Boolean         @default(false) @map("is_active")
-  level          Level?
-  type           Type            @default(FREE)
-  categoryId     Int             @map("category_id")
-  category       Category        @relation(fields: [categoryId], references: [id])
-  order          Order[]
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
-  CourseProgress CourseProgress?
-  Chapter        Chapter[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  price       Int
+  modul       Int
+  rating      Float?
+  description String
+  target      String[]
+  imageUrl    String?   @map("image_url")
+  author      String
+  groupUrl    String    @map("group_url")
+  isActive    Boolean   @default(false) @map("is_active")
+  level       Level?
+  type        Type      @default(FREE)
+  categoryId  Int       @map("category_id")
+  category    Category  @relation(fields: [categoryId], references: [id])
+  order       Order[]
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  Chapter     Chapter[]
 
   @@map("courses")
 }
 
 model CourseProgress {
   id         Int      @id @default(autoincrement())
-  userId     Int      @unique @map("user_id")
-  user       User     @relation(fields: [userId], references: [id])
-  courseId   Int      @unique @map("course_id")
-  course     Course   @relation(fields: [courseId], references: [id])
-  materialId Int      @unique @map("material_id")
-  material   Material @relation(fields: [materialId], references: [id])
   isComplete Boolean  @map("is_complete")
+  materialId Int      @map("material_id")
+  Material   Material @relation(fields: [materialId], references: [id])
+  orderId    Int      @map("order_id")
+  Order      Order    @relation(fields: [orderId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   @@map("course_progress")
 }
 
 model Order {
-  id             Int      @id @default(autoincrement())
-  userId         Int      @unique @map("user_id")
-  user           User     @relation(fields: [userId], references: [id])
-  courseId       Int      @unique @map("course_id")
-  course         Course   @relation(fields: [courseId], references: [id])
+  id             Int              @id @default(autoincrement())
   total_price    Int
-  payment_method String
-  status         Status   @default(UNPAID)
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
+  payment_method String?
+  status         String           @default("UNPAID")
+  userId         Int              @map("user_id")
+  user           User             @relation(fields: [userId], references: [id])
+  courseId       Int              @map("course_id")
+  course         Course           @relation(fields: [courseId], references: [id])
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  CourseProgress CourseProgress[]
 
   @@map("orders")
 }
@@ -123,7 +123,7 @@ model Chapter {
   id        Int        @id @default(autoincrement())
   courseId  Int        @map("course_id")
   name      String
-  duration  Int?
+  duration  Int
   course    Course     @relation(fields: [courseId], references: [id])
   material  Material[]
   createdAt DateTime   @default(now()) @map("created_at")
@@ -133,16 +133,16 @@ model Chapter {
 }
 
 model Material {
-  id             Int             @id @default(autoincrement())
-  chapterId      Int             @map("chapter_id")
-  videoUrl       String          @map("video_url")
+  id             Int              @id @default(autoincrement())
+  chapterId      Int              @map("chapter_id")
+  videoUrl       String           @map("video_url")
   name           String
   description    String
-  title          String
-  chapter        Chapter         @relation(fields: [chapterId], references: [id])
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
-  CourseProgress CourseProgress?
+  title          String?
+  chapter        Chapter          @relation(fields: [chapterId], references: [id])
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  CourseProgress CourseProgress[]
 
   @@map("materials")
 }

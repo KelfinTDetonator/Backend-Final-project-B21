@@ -8,7 +8,7 @@ const checkToken = require("../middleware/checkToken");
 // router.get('/', controller.getAll),
 // router.get('/:id',checkToken, checkRole(["admin", "user"]), controller.getId)
 router.get("/", checkToken, controller.getByUserId);
-router.delete("/:id", controller.delete);
+router.delete("/:id", checkToken, checkRole(["admin"]), controller.delete);
 // router.post('/',checkToken, controller.create)
 
 module.exports = router;

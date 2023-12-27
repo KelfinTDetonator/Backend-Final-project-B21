@@ -28,12 +28,12 @@ const checkToken = (req, res, next) => {
     };
     // req.user = jwtPayload;
     req.userRole = jwtPayload.role;
+    next();
   } catch (error) {
     return res.status(403).json({
       error,
     });
   }
-  next();
 };
 
 module.exports = checkToken;
