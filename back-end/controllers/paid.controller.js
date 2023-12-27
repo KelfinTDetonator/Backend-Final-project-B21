@@ -38,21 +38,25 @@ module.exports = {
         merchant_id: req.body.merchant_id,
       };
       console.log(notification1);
-      const data = await midtrans.snap.transaction.notification(notification1);
-      const orderId = Number(data.order_id.split("-")[0]);
-      const updatedPayment = await order.update({
-        where: { id: orderId },
-        data: {
-          status: "PAID",
-          payment_method: data.payment_type,
-        },
-      });
+      if (req.body.transaction_status === "capture" || req.body.transaction_status === "settlement") {
+        if (req.body.status_code === 200) {
+          const data = await midtrans.snap.transaction.notification(notification1);
+          const orderId = Number(data.order_id.split("-")[0]);
+          const updatedPayment = await order.update({
+            where: { id: orderId },
+            data: {
+              status: "PAID",
+              payment_method: data.payment_type,
+            },
+          });
 
-      return res.status(200).json({
-        status: true,
-        message: "",
-        data: { updatedPayment },
-      });
+          return res.status(200).json({
+            status: true,
+            message: "",
+            data: { updatedPayment },
+          });
+        }
+      }
     } catch (err) {
       console.log(err);
       return res.status(500).json({

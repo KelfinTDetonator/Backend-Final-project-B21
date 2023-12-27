@@ -1,5 +1,5 @@
-const { order, user, course } = require("../models/index");
 const Joi = require("joi");
+const { order, user, course } = require("../models/index");
 
 const orderValidation = Joi.object({
   courseId: Joi.number().integer().required(),
@@ -67,7 +67,7 @@ module.exports = {
 
       const userId = Number(req.body.userId);
       const courseId = Number(req.body.courseId);
-      const status = req.body.status;
+      const { status } = req.body;
       const { paymentMethod } = req.body;
 
       const checkOrder = await order.findFirst({

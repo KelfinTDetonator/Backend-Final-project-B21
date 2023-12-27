@@ -1,4 +1,4 @@
-const { courseProgress, course } = require("../models")
+const { courseProgress, course } = require("../models");
 
 module.exports = {
   completeMaterial: async (req, res) => {
@@ -9,16 +9,16 @@ module.exports = {
         data: {
           orderId: parseInt(orderId),
           materialId: parseInt(materialId),
-          isComplete: true
-        }
-      })
+          isComplete: true,
+        },
+      });
 
       res.status(200).json({
-        message: 'Material accessed successfully.'
-      })
+        message: "Material accessed successfully.",
+      });
     } catch (error) {
-      console.error(error)
-      res.status(500).json({ error: 'Internal server error.' })
+      console.error(error);
+      res.status(500).json({ error: "Internal server error." });
     }
   },
 
@@ -26,18 +26,17 @@ module.exports = {
     try {
       const data = await courseProgress.findMany({
         where: {
-          orderId: parseInt(req.params.orderId)
-        }
-      })
+          orderId: parseInt(req.params.orderId),
+        },
+      });
 
       return res.status(200).json({
-        data
-      })
-      
+        data,
+      });
     } catch (error) {
       return res.status(500).json({
-        error
-      })
+        error,
+      });
     }
-  }
-}
+  },
+};
