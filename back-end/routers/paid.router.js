@@ -5,5 +5,6 @@ const checkRole = require("../middleware/checkRole");
 
 // checkToken, checkRole(["admin"]),
 router.get("/", paidController.paySuccess);
+router.post("/midtrans/notif", paidController.handlePaymentNotification);
 
 module.exports = router;
