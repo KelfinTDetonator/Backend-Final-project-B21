@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "gcp-build": "npm run build",
+    "build": "npm run postinstall && npx prisma db push",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "prisma generate",
     "start": "node index.js",
