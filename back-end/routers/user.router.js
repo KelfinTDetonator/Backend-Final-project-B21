@@ -16,6 +16,6 @@ router.post("/login", controller.login);
 router.post("/forget-password", controller.forgetPassword);
 router.post("/insert-password", controller.insertPassword);
 router.post("/update-password", checkToken, checkRole(["admin", "user"]), controller.updatePassword);
-router.post("/admin", checkToken, checkRole(["admin"]), controller.loginAdmin);
+router.post("/admin", controller.loginAdmin);
 
 module.exports = router;
