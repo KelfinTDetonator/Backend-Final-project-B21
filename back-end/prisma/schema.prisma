@@ -63,7 +63,7 @@ model Course {
   modul       Int
   rating      Float?
   description String
-  target      String[]
+  target      String[]  @default([""])
   imageUrl    String?   @map("image_url")
   author      String
   groupUrl    String    @map("group_url")
@@ -123,7 +123,7 @@ model Chapter {
   id        Int        @id @default(autoincrement())
   courseId  Int        @map("course_id")
   name      String
-  duration  Int
+  duration  Int?
   course    Course     @relation(fields: [courseId], references: [id])
   material  Material[]
   createdAt DateTime   @default(now()) @map("created_at")
