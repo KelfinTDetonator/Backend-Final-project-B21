@@ -48,6 +48,11 @@ module.exports = {
       token,
       clientKey: process.env.MIDTRANS_CLIENT_KEY,
     });
+    // return res.status(200).json({
+    //   error: false,
+    //   midtrans_token: token,
+    //   midtrans_clientKey: process.env.MIDTRANS_CLIENT_KEY,
+    // });
   },
 
 };

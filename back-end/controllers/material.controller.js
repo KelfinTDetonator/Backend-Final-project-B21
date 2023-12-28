@@ -98,32 +98,17 @@ module.exports = {
 
       if (!isExist) { return res.status(404).json({ error: true, message: "Not Found" }); }
 
-      if (videoUrl !== undefined) {
-        await material.update({
-          where: { id: materialId },
-          data: {
-            // chapterId: chapterId || isExist.chapterId,
-            // chapter ID gaboleh diubah ke id lain, karena table chapter perlu sinkron dengan table materi yang baru di-update
-            // supaya durasi video yang terbaru sinkron di table chapter dan mencegah inkonsistensi data
-            videoUrl,
-            name: name || isExist.name,
-            description: description || isExist.description,
-            title: title || isExist.title,
-          },
-        });
-        return res.status(200).json({ error: false, message: "200 OK" });
-      }
-      // jika video tidak terdapat update
       await material.update({
         where: { id: materialId },
         data: {
           chapterId: chapterId || isExist.chapterId,
+          videoUrl: videoUrl || isExist.videoUrl,
           name: name || isExist.name,
           description: description || isExist.description,
           title: title || isExist.title,
         },
       });
-      return res.status(200).json({ error: false, message: "200 OK 1" });
+      return res.status(200).json({ error: false, message: "200 OK" });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: true, message: "Internal Server Error" });
