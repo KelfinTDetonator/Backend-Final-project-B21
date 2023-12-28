@@ -63,6 +63,51 @@ module.exports = {
 
   patchOrder: async (req, res) => {
     try {
+      const userId = Number(req.user.id);
+      const courseId = Number(req.body.courseId);
+
+      if (!userId) { return res.status(403).json({ error: true, message: "Login first" }); }
+
+      const checkOrder = await order.findFirst({
+        where: {
+          userId,
+          courseId,
+        },
+      });
+
+      if (!checkOrder) { return res.status(404).json({ error: true, message: "Order Data Not Found" }); }
+
+      const checkCourse = await course.findUnique({
+        where: { id: courseId },
+      });
+
+      if (!checkCourse) {
+        return res.status(404).json({
+          error: true,
+          message: `Course with ID:${courseId} is not found`,
+        });
+      }
+
+      const data = await order.update({
+        where: { id: checkOrder.id },
+        data: {
+          courseId,
+        },
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "Cart is up to date!",
+        order_data: data,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+  },
+
+  patchOrderById: async (req, res) => {
+    try {
       const orderId = Number(req.params.id);
 
       const userId = Number(req.body.userId);
