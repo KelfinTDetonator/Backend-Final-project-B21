@@ -37,6 +37,12 @@ module.exports = {
     const val = schema.validate(req.body);
 
     if (!(val.error)) {
+      if (!req.body.password) {
+        return res.status(400).json({
+          status: "failed",
+          message: "Password wajib diisi",
+        });
+      }
       try {
         const {
           email, password, role, name, phone,
@@ -643,5 +649,16 @@ module.exports = {
     } catch (error) {
       next(error);
     }
+  },
+  googleOauth2: (req, res) => {
+    // Generate a JWT token for the authenticated user
+    let token = jwt.sign({ id: req.user.id }, "secretKey");
+
+    return res.status(200).json({
+      status: true,
+      message: "OK",
+      err: null,
+      data: { user: req.user, token },
+    });
   },
 };

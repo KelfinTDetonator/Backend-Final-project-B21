@@ -12,13 +12,14 @@ datasource db {
 
 model User {
   id                   Int             @id @default(autoincrement())
-  email                String
-  password             String
+  email                String          @unique
+  password             String?
   reset_password_token String?
   role                 Role            @default(user)
   order                Order[]
   profile              Profile?
   otp                  String?
+  googleID             String?
   verified             Boolean?        @default(false)
   expiration_time      DateTime?
   notification         Notification[]

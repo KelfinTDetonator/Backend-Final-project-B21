@@ -124,27 +124,23 @@ module.exports = {
     }
   },
 
-  getOrder: async (req, res) => {
-    try{
-      const orderId = Number(req.user.id); // Assuming the order ID is passed as a route parameter
-
-      const order = await order.findFirst({
+  getById: async (req, res) => {
+    try {
+      const userId = parseInt(req.user.id);
+  
+      const orders = await order.findMany({
         where: {
-          id: orderId,
+          userId,
         },
       });
-
-      if (!order) {
-        return res.status(404).json({ error: true, message: `Order with ID ${orderId} not found for the current user` });
-      }
-
+  
       return res.status(200).json({
         error: false,
-        message: "Order retrieved successfully",
-        order_data: order,
+        message: "success",
+        orders,
       });
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
