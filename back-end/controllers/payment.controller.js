@@ -26,6 +26,16 @@ module.exports = {
     const userData = await user.findUnique({ where: { id: orderData.userId } });
     const date = Date.now();
     const orderDate = `${orderData.id}-${date.valueOf()}`;
+
+    // const midtransAPI = await fetch(`https://api.sandbox.midtrans.com/v2/${orderDate}/status`, {
+    //   headers: new Headers({
+    //     "Content-Type": "application/json",
+    //     Authorization: `Basic ${btoa(process.env.MIDTRANS_SERVER_KEY)}:`,
+    //   }),
+    // });
+
+    // const verifyTransaction = await midtransAPI.json();
+
     const parameters = {
       transaction_details: {
         order_id: orderDate,
@@ -44,15 +54,15 @@ module.exports = {
       },
     };
     const { token, redirect_url } = await midtrans.snap.createTransaction(parameters);
-    return res.render("payment", {
-      token,
-      clientKey: process.env.MIDTRANS_CLIENT_KEY,
-    });
-    // return res.status(200).json({
-    //   error: false,
-    //   midtrans_token: token,
-    //   midtrans_clientKey: process.env.MIDTRANS_CLIENT_KEY,
+    // return res.render("payment", {
+    //   token,
+    //   clientKey: process.env.MIDTRANS_CLIENT_KEY,
     // });
+    return res.status(200).json({
+      error: false,
+      midtrans_token: token,
+      midtrans_clientKey: process.env.MIDTRANS_CLIENT_KEY,
+    });
   },
 
 };
