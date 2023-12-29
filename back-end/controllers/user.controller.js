@@ -13,6 +13,9 @@ function AddMinutesToDate(date, minutes, seconds) {
   return new Date(date.getTime() + minutes * 60000);
   // return new Date(date.getTime() + seconds * 1000);
 }
+// function AddSecondsToDate(date, seconds) {
+//   return new Date(date.getTime() + seconds * 1000);
+// }
 
 const generateResetToken = () => {
   const token = crypto.randomBytes(20).toString("hex");
@@ -31,6 +34,12 @@ module.exports = {
     const val = schema.validate(req.body);
 
     if (!(val.error)) {
+      if (!req.body.password) {
+        return res.status(400).json({
+          status: "failed",
+          message: "Password wajib diisi",
+        });
+      }
       try {
         const {
           email, password, role, name, phone,
@@ -108,6 +117,12 @@ module.exports = {
         //   message: 'Gagal mengirim email verifikasi. Silahkan coba lagi nanti.'
         // });
       }
+    } else {
+      const { message } = val.error.details[0];
+      res.status(400).json({
+        status: "failed",
+        message,
+      });
     }
   },
   login: async (req, res, next) => {
@@ -633,5 +648,16 @@ module.exports = {
     } catch (error) {
       next(error);
     }
+  },
+  googleOauth2: (req, res) => {
+    // Generate a JWT token for the authenticated user
+    const token = jwt.sign({ id: req.user.id }, "secretKey");
+
+    return res.status(200).json({
+      status: true,
+      message: "OK",
+      err: null,
+      data: { user: req.user, token },
+    });
   },
 };

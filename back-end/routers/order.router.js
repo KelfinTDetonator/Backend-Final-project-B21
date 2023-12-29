@@ -10,6 +10,6 @@ router.post("/create", checkToken, checkRole(["user", "admin"]), orderController
 // router.patch("/:id", checkToken, checkRole(["admin", "user"]), orderController.patchOrder);
 router.patch("/admin/:id", checkToken, checkRole(["admin"]), orderController.patchOrderById);
 router.delete("/delete/:id", checkToken, checkRole(["admin"]), orderController.deleteOrderData);
-// router.post("/midtrans/notif", orderController.handlePaymentNotification);
+router.get("/", checkToken, checkRole(["admin", "user"]), orderController.getById);
 
 module.exports = router;

@@ -210,4 +210,25 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
+
+  getById: async (req, res) => {
+    try {
+      const userId = parseInt(req.user.id);
+
+      const orders = await order.findMany({
+        where: {
+          userId,
+        },
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "success",
+        orders,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+  },
 };
