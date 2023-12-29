@@ -117,7 +117,7 @@ module.exports = {
         //   message: 'Gagal mengirim email verifikasi. Silahkan coba lagi nanti.'
         // });
       }
-    }else {
+    } else {
       const { message } = val.error.details[0];
       res.status(400).json({
         status: "failed",
@@ -651,7 +651,7 @@ module.exports = {
   },
   googleOauth2: (req, res) => {
     // Generate a JWT token for the authenticated user
-    let token = jwt.sign({ id: req.user.id }, "secretKey");
+    const token = jwt.sign({ id: req.user.id }, "secretKey");
 
     return res.status(200).json({
       status: true,

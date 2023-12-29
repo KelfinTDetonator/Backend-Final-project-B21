@@ -1,5 +1,5 @@
-const { order, user, course } = require("../models/index");
 const Joi = require("joi");
+const { order, user, course } = require("../models/index");
 
 const orderValidation = Joi.object({
   courseId: Joi.number().integer().required(),
@@ -66,7 +66,7 @@ module.exports = {
       req.body.userId = req.user.id;
       const userId = Number(req.body.userId);
       const courseId = Number(req.body.courseId);
-      const status = req.body.status;
+      const { status } = req.body;
       const { paymentMethod } = req.body;
 
       const checkCourse = await course.findUnique({ where: { id: courseId } });
@@ -115,7 +115,7 @@ module.exports = {
       req.body.userId = req.user.id;
       const userId = Number(req.body.userId);
       const courseId = Number(req.body.courseId);
-      const status = req.body.status;
+      const { status } = req.body;
       const { paymentMethod } = req.body;
 
       const checkCourse = await course.findUnique({ where: { id: courseId } });
@@ -176,13 +176,13 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const userId = parseInt(req.user.id);
-  
+
       const orders = await order.findMany({
         where: {
           userId,
         },
       });
-  
+
       return res.status(200).json({
         error: false,
         message: "success",
@@ -193,4 +193,4 @@ module.exports = {
       return res.status(500).json({ error: true, message: "Internal Server Error" });
     }
   },
-}
+};

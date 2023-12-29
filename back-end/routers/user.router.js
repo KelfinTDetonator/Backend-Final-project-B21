@@ -1,10 +1,11 @@
 const express = require("express");
+
 const router = express.Router();
 const controller = require("../controllers/user.controller");
 const checkRole = require("../middleware/checkRole");
 const checkToken = require("../middleware/checkToken");
-const passport = require('../utils/passport')
-const {googleOauth2} = require('../controllers/user.controller')
+const passport = require("../utils/passport");
+const { googleOauth2 } = require("../controllers/user.controller");
 
 router.delete("/:id", controller.deleteUser);
 router.get("/", checkToken, checkRole(["admin", "user"]), controller.getAllUsers);
