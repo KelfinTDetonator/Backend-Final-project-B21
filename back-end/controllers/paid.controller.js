@@ -15,7 +15,10 @@ module.exports = {
       if (statusCode === 200) {
         await order.update({
           where: { id: orderId },
-          data: { status: "PAID" },
+          data: { 
+            status: "PAID",
+
+          },
         });
         return res.render("success");
       }
@@ -39,7 +42,7 @@ module.exports = {
       };
       console.log(notification1);
       if (req.body.transaction_status === "capture" || req.body.transaction_status === "settlement") {
-        if (req.body.status_code === 200) {
+        if (Number(req.body.status_code) === 200) {
           const data = await midtrans.snap.transaction.notification(notification1);
           const orderId = Number(data.order_id.split("-")[0]);
           const updatedPayment = await order.update({
