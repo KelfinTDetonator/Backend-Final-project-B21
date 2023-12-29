@@ -462,7 +462,7 @@ module.exports = {
   },
   getById: async (req, res) => {
     try {
-      const { id } = req.params;
+      const id = req.user.id;
 
       const userWithProfile = await prisma.user.findUnique({
         where: {
@@ -470,7 +470,6 @@ module.exports = {
         },
         include: {
           profile: true,
-          notification: true,
           order: true,
         },
       });
