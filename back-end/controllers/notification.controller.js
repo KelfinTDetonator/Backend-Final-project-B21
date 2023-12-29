@@ -126,7 +126,7 @@ module.exports = {
 
       const userNotifications = await prisma.notification.findMany({
         where: {
-          userId,
+          id: parseInt(userId),
         },
       });
 

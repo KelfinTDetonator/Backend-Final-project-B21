@@ -7,9 +7,8 @@ const passport = require('../utils/passport')
 const {googleOauth2} = require('../controllers/user.controller')
 
 router.delete("/:id", controller.deleteUser);
-// router.get("/", controller.getAllUsers);
 router.get("/", checkToken, checkRole(["admin", "user"]), controller.getAllUsers);
-// router.get("/:id", controller.getById);
+router.get("/:id", controller.getById);
 router.post("/otp", controller.otp);
 router.post("/verify", controller.verify);
 router.post("/", controller.register);

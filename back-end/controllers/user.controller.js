@@ -6,11 +6,8 @@ const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const {
-  user, profile, notification,
-} = require("../models/index");
 
-const nodemailer = require("../utils/index.js");
+const nodemailer = require("../utils/index");
 
 function AddMinutesToDate(date, minutes, seconds) {
   return new Date(date.getTime() + minutes * 60000);
@@ -114,12 +111,13 @@ module.exports = {
           message: "Anda berhasil registrasi, silahkan cek email anda untuk verifikasi",
         });
       } catch (err) {
-        res.status(400).json({
-          status: "failed",
-          message: err.message,
-        });
-      } next();
-    } else {
+        next(err);
+        // return res.status(500).json({
+        //   status: 'failed',
+        //   message: 'Gagal mengirim email verifikasi. Silahkan coba lagi nanti.'
+        // });
+      }
+    }else {
       const { message } = val.error.details[0];
       res.status(400).json({
         status: "failed",
@@ -473,6 +471,7 @@ module.exports = {
         include: {
           profile: true,
           notification: true,
+          order: true,
         },
       });
 
@@ -520,7 +519,7 @@ module.exports = {
         },
       });
 
-      const resetLink = `localhost:8000/api/v1/auth/resetpassword?token=${resetToken}`;
+      const resetLink = `https://final-project-binar-six.vercel.app/auth/resetpassword?token=${resetToken}`;
 
       nodemailer.sendEmail(email, "Email Activation", `silahkan klik link berikut ini untuk mengganti password ${resetLink}`);
 
