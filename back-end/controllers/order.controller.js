@@ -61,10 +61,12 @@ module.exports = {
     }
   },
 
-  getOrderData: async (req, res) => {
+  getOrderInfo: async (req, res) => {
     try {
       const userId = Number(req.user.id);
       const courseId = Number(req.body.courseId);
+
+      if (!courseId) { return res.status(400).json({ error: true, message: "Course id is required" }); }
 
       const data = await order.findFirst({
         where: {
@@ -73,7 +75,11 @@ module.exports = {
         },
       });
 
-      return res.status(200).json({ data });
+      return res.status(200).json({
+        error: false,
+        message: "",
+        order_info: data,
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: true, message: "Internal Server Error" });
