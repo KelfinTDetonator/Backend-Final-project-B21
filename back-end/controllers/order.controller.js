@@ -64,7 +64,7 @@ module.exports = {
   getOrderInfo: async (req, res) => {
     try {
       const userId = Number(req.user.id);
-      const courseId = Number(req.params.courseId);
+      const courseId = Number(req.params.id);
 
       if (!courseId) { return res.status(400).json({ error: true, message: "Course id is required" }); }
 
