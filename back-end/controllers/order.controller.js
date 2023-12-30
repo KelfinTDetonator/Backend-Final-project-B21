@@ -42,7 +42,7 @@ module.exports = {
 
       const data = await order.create({
         data: {
-          total_price: checkCourse.price,
+          total_price: (checkCourse.price * 0.1) + checkCourse.price,
           payment_method: paymentMethod || null,
           courseId,
           userId,

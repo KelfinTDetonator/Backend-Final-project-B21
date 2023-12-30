@@ -6,7 +6,7 @@ const {
 module.exports = {
   payment: async (req, res) => {
     const userId = (req.user) ? req.user.id : Number(req.params.id);
-    // const userId = ;
+    // const userId = Number(req.user.id);
     const orderData = await order.findFirst({
       where: {
         status: "UNPAID",
