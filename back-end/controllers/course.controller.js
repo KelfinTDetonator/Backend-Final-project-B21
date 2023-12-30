@@ -128,7 +128,7 @@ module.exports = {
     }
   },
 
-  update: async (req, res) => {
+  putUpdate: async (req, res) => {
     try {
       const fileToString = req.file.buffer.toString("base64")
 
