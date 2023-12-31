@@ -130,7 +130,7 @@ module.exports = {
     }
   },
 
-  update: async (req, res) => {
+  putUpdate: async (req, res) => {
     try {
       const fileToString = req.file.buffer.toString("base64");
 
@@ -180,6 +180,46 @@ module.exports = {
       return res.status(500).json({
         error,
       });
+    }
+  },
+
+  patchUpdate: async (req, res) => {
+    try {
+      const { price, modul, categoryId, name, description, target, author, groupUrl, level, type, isActive } = req.body;
+
+      const courseData = await course.findUnique({ where: {id: parseInt(req.params.id)} })
+      if (!courseData) { return res.status(404).json({ error: true, message: "Course Not Found" }); }
+
+      await course.update({
+        where: {id: parseInt(req.params.id)},
+        data: {
+          name,
+          price,
+          modul,
+          rating: parseFloat(req.body.rating),
+          description,
+          target,
+          author,
+          groupUrl,
+          level,
+          type,
+          isActive,
+          categoryId
+        }
+      })
+
+      const updatedData = await course.findUnique({
+        where: { id: parseInt(req.params.id) }
+      })
+
+      return res.status(200).json({
+        data: updatedData
+      })
+
+    } catch (error) {
+      return res.status(500).json({
+        error
+      })
     }
   },
 
