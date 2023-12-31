@@ -462,7 +462,7 @@ module.exports = {
   },
   getById: async (req, res) => {
     try {
-      const id = req.user.id;
+      const { id } = req.user;
 
       const userWithProfile = await prisma.user.findUnique({
         where: {

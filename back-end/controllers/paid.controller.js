@@ -15,7 +15,7 @@ module.exports = {
       if (statusCode === 200) {
         await order.update({
           where: { id: orderId },
-          data: { 
+          data: {
             status: "PAID",
 
           },

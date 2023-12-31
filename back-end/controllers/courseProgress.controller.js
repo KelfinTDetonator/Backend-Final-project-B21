@@ -1,4 +1,4 @@
-const { courseProgress, order, user } = require("../models")
+const { courseProgress, order, user } = require("../models");
 
 module.exports = {
   completeMaterial: async (req, res) => {
@@ -11,12 +11,12 @@ module.exports = {
           materialId: parseInt(materialId),
           isComplete: true,
         },
-      })
+      });
 
       if (progressExist) {
         return res.status(400).json({
           error: true,
-          message: 'User already access this material.',
+          message: "User already access this material.",
         });
       }
 
@@ -41,54 +41,52 @@ module.exports = {
     try {
       const data = await courseProgress.findMany({
         where: {
-          orderId: parseInt(req.params.orderId)
-        }
-      })
+          orderId: parseInt(req.params.orderId),
+        },
+      });
 
       if (!data.length) {
         return res.status(404).json({
           error: {
-            message: 'Order not found.'
-          }
-        })
+            message: "Order not found.",
+          },
+        });
       }
 
       return res.status(200).json({
-        data
-      })
-      
+        data,
+      });
     } catch (error) {
       return res.status(500).json({
-        error
-      })
+        error,
+      });
     }
   },
 
   getOrderProgress: async (req, res) => {
     try {
       const data = await order.findMany({
-        where: {userId: parseInt(req.params.userId)},
+        where: { userId: parseInt(req.params.userId) },
         include: {
-          CourseProgress: true
-        }
-      })
-      
+          CourseProgress: true,
+        },
+      });
+
       if (!data.length) {
         return res.status(404).json({
           error: {
-            message: 'User not found.'
-          }
-        })
+            message: "User not found.",
+          },
+        });
       }
 
       return res.status(200).json({
-        data
-      })
-      
+        data,
+      });
     } catch (error) {
       return res.status(500).json({
-        error
-      })
+        error,
+      });
     }
   },
 
