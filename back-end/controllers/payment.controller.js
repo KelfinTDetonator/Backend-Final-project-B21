@@ -19,7 +19,11 @@ module.exports = {
     const courseItemData = await course.findUnique({
       where: { id: orderData.courseId },
     });
+
+    if (!courseItemData) { return res.status(404).json({ error: true, message: "Course item not found" }); }
     courseItemData.quantity = 1;
+    courseItemData.price = (courseItemData.price * 0.1) + courseItemData.price;
+
     const customer = await profile.findUnique({
       where: { userId: orderData.userId },
     });
