@@ -8,6 +8,7 @@ const checkRole = require("../middleware/checkRole");
 
 router.post("/create", checkToken, checkRole(["admin"]), multer.single("image"), controller.create);
 router.put("/:id", checkToken, checkRole(["admin"]), multer.single("image"), controller.putUpdate);
+router.patch("/:id", checkToken, checkRole(["admin"]), controller.patchUpdate);
 router.get("/:id", controller.getId);
 router.get("/", controller.getAll);
 router.delete("/:id", checkToken, checkRole(["admin"]), controller.delete);
