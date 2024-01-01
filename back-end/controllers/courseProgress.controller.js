@@ -49,7 +49,7 @@ module.exports = {
       if (!data.length) {
         return res.status(404).json({
           error: {
-            message: "Order not found.",
+            message: "User order doesn't exist.",
           },
         });
       }
@@ -66,17 +66,14 @@ module.exports = {
 
   getOrderProgress: async (req, res) => {
     try {
-      const data = await order.findMany({
-        where: { userId: parseInt(req.params.userId) },
-        include: {
-          courseProgress: true,
-        },
+      const data = await courseProgress.findMany({
+        where: { orderId: parseInt(req.params.orderId) },
       });
 
       if (!data.length) {
         return res.status(404).json({
           error: {
-            message: "User not found.",
+            message: "User progress doesn't exist.",
           },
         });
       }
