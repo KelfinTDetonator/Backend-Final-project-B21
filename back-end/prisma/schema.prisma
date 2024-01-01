@@ -105,7 +105,7 @@ model Order {
   course         Course           @relation(fields: [courseId], references: [id])
   createdAt      DateTime         @default(now()) @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")
-  CourseProgress CourseProgress[]
+  courseProgress CourseProgress[]
 
   @@map("orders")
 }
