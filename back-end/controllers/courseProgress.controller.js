@@ -43,7 +43,7 @@ module.exports = {
       const data = await order.findMany({
         where: {userId: parseInt(req.params.userId)},
         include: {
-          CourseProgress: true
+          courseProgress: true
         }
       })
       
