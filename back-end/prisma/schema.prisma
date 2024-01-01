@@ -6,20 +6,21 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 model User {
-  id                   Int            @id @default(autoincrement())
-  email                String
-  password             String
+  id                   Int             @id @default(autoincrement())
+  email                String          @unique
+  password             String?
   reset_password_token String?
-  role                 Role           @default(user)
+  role                 Role            @default(user)
   order                Order[]
   profile              Profile?
   otp                  String?
-  verified             Boolean?       @default(false)
+  googleID             String?
+  verified             Boolean?        @default(false)
   expiration_time      DateTime?
   notification         Notification[]
   // CourseProgress  CourseProgress[]
