@@ -173,10 +173,12 @@ module.exports = {
         where: { id: courseId || checkOrder.courseId },
       });
 
+      const pricePpn = (checkCourse.price * 0.1) + checkCourse.price;
+
       const data = await order.update({
         where: { id: checkOrder.id },
         data: {
-          total_price: checkCourse.price || checkOrder.total_price,
+          total_price: pricePpn || checkOrder.total_price,
           payment_method: paymentMethod,
           courseId: courseId || checkOrder.courseId,
           userId: userId || checkOrder.userId,
