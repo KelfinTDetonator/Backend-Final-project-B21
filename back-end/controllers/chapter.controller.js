@@ -1,12 +1,15 @@
-const { chapter, course } = require("../models/index");
+const { chapter, course, material } = require("../models/index");
 
 module.exports = {
   createChapter: async (req, res) => {
     try {
       const { name } = req.body;
-      const courseId = Number(req.body.courseId); const duration = Number(req.body.duration);
+      const courseId = Number(req.body.courseId);
 
       if (!(name && courseId)) { return res.status(400).json({ error: true, message: "Bad Request" }); }
+      const isChapterExist = await chapter.findFirst({ where: { name: { contains: name } } });
+
+      if (isChapterExist) { return res.status(400).json({ error: true, message: "Chapter is exist" }); }
 
       const courseData = await course.findUnique({ where: { id: courseId } });
 
@@ -82,7 +85,9 @@ module.exports = {
 
   getAllChapter: async (req, res) => {
     try {
-      const allChapter = await chapter.findMany();
+      const allChapter = await chapter.findMany({
+        include: { material: true },
+      });
       if (!allChapter) { return res.status(404).json({ error: true, message: "Chapter is not created yet!" }); }
 
       return res.status(200).json({

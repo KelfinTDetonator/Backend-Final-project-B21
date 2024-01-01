@@ -13,6 +13,9 @@ function AddMinutesToDate(date, minutes, seconds) {
   return new Date(date.getTime() + minutes * 60000);
   // return new Date(date.getTime() + seconds * 1000);
 }
+// function AddSecondsToDate(date, seconds) {
+//   return new Date(date.getTime() + seconds * 1000);
+// }
 
 const generateResetToken = () => {
   const token = crypto.randomBytes(20).toString("hex");
@@ -31,6 +34,12 @@ module.exports = {
     const val = schema.validate(req.body);
 
     if (!(val.error)) {
+      if (!req.body.password) {
+        return res.status(400).json({
+          status: "failed",
+          message: "Password wajib diisi",
+        });
+      }
       try {
         const {
           email, password, role, name, phone,
@@ -108,6 +117,12 @@ module.exports = {
         //   message: 'Gagal mengirim email verifikasi. Silahkan coba lagi nanti.'
         // });
       }
+    } else {
+      const { message } = val.error.details[0];
+      res.status(400).json({
+        status: "failed",
+        message,
+      });
     }
   },
   login: async (req, res, next) => {
@@ -128,6 +143,88 @@ module.exports = {
         return res.status(404).json({
           status: "failed",
           message: "User tidak ditemukan",
+        });
+      }
+
+      // Verifikasi password
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (!passwordMatch) {
+        return res.status(401).json({
+          status: "failed",
+          message: "Password salah",
+        });
+      }
+
+      // Periksa status verifikasi
+      if (!user.verified) {
+        return res.status(403).json({
+          status: "failed",
+          message: "Akun belum diverifikasi",
+        });
+      }
+
+      const notif = await prisma.notification.create({
+        data: {
+          title: "Berhasil login",
+          description: "Selamat anda berhasil login",
+          userId: loginId,
+        },
+      });
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        "secretKey",
+        { expiresIn: "1h" },
+      );
+
+      res.status(200).json({
+        status: "success",
+        message: "Login berhasil",
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        token,
+        notif,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: "failed",
+        message: error.message,
+      });
+    }
+  },
+  loginAdmin: async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+
+      const loginUser = await prisma.user.findFirst({
+        where: { email },
+      });
+
+      const loginId = loginUser.id;
+
+      const user = await prisma.user.findFirst({
+        where: { email },
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          status: "failed",
+          message: "User tidak ditemukan",
+        });
+      }
+
+      if (user.role != "admin") {
+        return res.status(403).json({
+          status: "failed",
+          message: "anda bukan admin",
         });
       }
 
@@ -365,7 +462,7 @@ module.exports = {
   },
   getById: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { id } = req.user;
 
       const userWithProfile = await prisma.user.findUnique({
         where: {
@@ -373,7 +470,6 @@ module.exports = {
         },
         include: {
           profile: true,
-          notification: true,
           order: true,
         },
       });
@@ -422,7 +518,7 @@ module.exports = {
         },
       });
 
-      const resetLink = `https://final-project-binar-six.vercel.app/auth/resetpassword?token=${resetToken}`;
+      const resetLink = `http://localhost:5173/auth/resetpassword?token=${resetToken}`;
 
       nodemailer.sendEmail(email, "Email Activation", `silahkan klik link berikut ini untuk mengganti password ${resetLink}`);
 
@@ -551,5 +647,16 @@ module.exports = {
     } catch (error) {
       next(error);
     }
+  },
+  googleOauth2: (req, res) => {
+    // Generate a JWT token for the authenticated user
+    const token = jwt.sign({ id: req.user.id }, "secretKey");
+
+    return res.status(200).json({
+      status: true,
+      message: "OK",
+      err: null,
+      data: { user: req.user, token },
+    });
   },
 };
