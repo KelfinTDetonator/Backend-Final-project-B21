@@ -518,7 +518,7 @@ module.exports = {
         },
       });
 
-      const resetLink = `http://localhost:5173/auth/resetpassword?token=${resetToken}`;
+      const resetLink = `https://demyu.vercel.app/auth/resetpassword?token=${resetToken}`;
 
       nodemailer.sendEmail(email, "Email Activation", `silahkan klik link berikut ini untuk mengganti password ${resetLink}`);
 
