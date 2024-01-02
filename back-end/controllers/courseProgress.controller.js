@@ -1,22 +1,54 @@
-const { courseProgress, order, user } = require("../models");
+const { courseProgress, order, material } = require("../models");
 
 module.exports = {
   completeMaterial: async (req, res) => {
     try {
       const { orderId, materialId } = req.params;
 
+      const checkOrder = await order.findUnique({
+        where: {
+          id: parseInt(orderId),
+        },
+      });
+
+      if (!checkOrder) {
+        return res.status(404).json({
+          error: true,
+          message: "Order not found.",
+        });
+      }
+
+      if (checkOrder.status !== "PAID") {
+        return res.status(400).json({
+          error: true,
+          message: "Order is not PAID. Material access is allowed only for PAID orders.",
+        });
+      }
+
+      const checkMaterial = await material.findUnique({
+        where: {
+          id: parseInt(materialId),
+        },
+      });
+
+      if (!checkMaterial) {
+        return res.status(404).json({
+          error: true,
+          message: "Material not found.",
+        });
+      }
+
       const progressExist = await courseProgress.findFirst({
         where: {
-          orderId: parseInt(orderId),
           materialId: parseInt(materialId),
           isComplete: true,
         },
       });
-
+  
       if (progressExist) {
         return res.status(400).json({
           error: true,
-          message: "User already access this material.",
+          message: "Material is inaccessible or already accessed",
         });
       }
 
@@ -40,7 +72,7 @@ module.exports = {
   getUserProgress: async (req, res) => {
     try {
       const data = await order.findMany({
-        where: {userId: parseInt(req.params.userId)},
+        where: {userId: parseInt(req.user.id)},
         include: {
           courseProgress: true
         }
