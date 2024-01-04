@@ -1,4 +1,4 @@
-const { course } = require("../models");
+const { course, courseProgress, material, order, chapter } = require("../models");
 const utils = require("../utils");
 
 module.exports = {
@@ -226,13 +226,79 @@ module.exports = {
 
   delete: async (req, res) => {
     try {
-      const data = await course.delete({
+      const courseId = parseInt(req.params.id);
+
+      const courseProgressExist = await courseProgress.findMany({
         where: {
-          id: parseInt(req.params.id),
+          Order: {
+            courseId: courseId,
+          },
         },
       });
 
-      return res.status(204).json();
+      if (courseProgressExist.length > 0) {
+        await courseProgress.deleteMany({
+          where: {
+            Order: {
+              courseId: courseId,
+            },
+          },
+        });
+      }
+
+      const materialExist = await material.findMany({
+        where: {
+          chapter: {
+            courseId: courseId,
+          },
+        },
+      });
+
+      if (materialExist.length > 0) {
+        await material.deleteMany({
+          where: {
+            chapter: {
+              courseId: courseId,
+            },
+          },
+        });
+      }
+
+      const chapterExist = await chapter.findMany({
+        where: {
+          courseId: courseId
+        }
+      })
+
+      if (chapterExist.length > 0) {
+        await chapter.deleteMany({
+          where: {
+            courseId: courseId
+          }
+        })
+      }
+  
+      const orderExist = await order.findMany({
+        where: {
+          courseId: courseId,
+        },
+      });
+  
+      if (orderExist.length > 0) {
+        await order.deleteMany({
+          where: {
+            courseId: courseId,
+          },
+        });
+      }
+      
+      await course.delete({
+        where: {
+          id: courseId,
+        },
+      });
+      
+      return res.status(200).json({ error: false, message: "Course deleted successfully" });;
     } catch (error) {
       return res.status(500).json({
         error,
